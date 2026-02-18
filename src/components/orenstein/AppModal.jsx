@@ -30,8 +30,7 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
       <div className={`absolute inset-0 backdrop-blur-md ${isDarkMode ? 'bg-[#020617]/90' : 'bg-slate-900/60'}`} onClick={onClose}></div>
       <div className={`relative w-full max-w-2xl border rounded-[4rem] shadow-3xl overflow-hidden ring-1 ring-white/10 ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-black/50' : 'bg-white border-slate-200 shadow-slate-300'}`}>
         <div className="p-16">
-          <h2 className={`text-4xl font-black tracking-tighter uppercase italic mb-4 leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{appToEdit ? 'Editar Módulo' : 'Materializar Ativo'}</h2>
-          <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-12">Protocolo de Modificação Orenstein AI</p>
+          <h2 className={`text-4xl font-black tracking-tighter uppercase italic mb-12 leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{appToEdit ? 'Editar Módulo' : 'Materializar Ativo'}</h2>
           <form onSubmit={handleSubmit} className="space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
