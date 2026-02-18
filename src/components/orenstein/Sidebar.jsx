@@ -87,7 +87,7 @@ export default function Sidebar({
             </div>
 
             <button onClick={triggerNewApp} className="w-full flex items-center justify-center gap-4 py-5 rounded-[2.5rem] text-xs font-black uppercase bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl hover:scale-105 active:scale-95 transition-all">
-              <PackagePlus className="w-5 h-5" /> Materializar Ativo
+              <PackagePlus className="w-5 h-5" /> Adicionar Aplicativo
             </button>
           </div>
         </section>
