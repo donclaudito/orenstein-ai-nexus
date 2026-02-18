@@ -1,0 +1,63 @@
+import React, { useState, useEffect } from 'react';
+import { SECTORS_LIST } from './sectorStyles';
+
+export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave }) {
+  const [form, setForm] = useState({ name: '', url: '', category: 'Administrativo' });
+
+  useEffect(() => {
+    if (appToEdit) {
+      setForm({ name: appToEdit.title, url: appToEdit.url, category: appToEdit.category });
+    } else {
+      setForm({ name: '', url: '', category: 'Administrativo' });
+    }
+  }, [appToEdit, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.url.trim()) return;
+    onSave({
+      title: form.name,
+      url: form.url.startsWith('http') ? form.url : `https://${form.url}`,
+      category: form.category,
+      description: appToEdit?.description || "Ativo materializado na rede Orenstein AI."
+    }, appToEdit);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+      <div className={`absolute inset-0 backdrop-blur-md ${isDarkMode ? 'bg-[#020617]/90' : 'bg-slate-900/60'}`} onClick={onClose}></div>
+      <div className={`relative w-full max-w-2xl border rounded-[4rem] shadow-3xl overflow-hidden ring-1 ring-white/10 ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-black/50' : 'bg-white border-slate-200 shadow-slate-300'}`}>
+        <div className="p-16">
+          <h2 className={`text-4xl font-black tracking-tighter uppercase italic mb-4 leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{appToEdit ? 'Editar Módulo' : 'Materializar Ativo'}</h2>
+          <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-12">Protocolo de Modificação Orenstein AI</p>
+          <form onSubmit={handleSubmit} className="space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Identificação</label>
+                <input type="text" required autoFocus value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className={`w-full border focus:border-blue-500/50 rounded-3xl px-8 py-5 text-sm font-bold outline-none transition-all shadow-inner ${isDarkMode ? 'bg-black/40 border-slate-800 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`} />
+              </div>
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">URL Destino</label>
+                <input type="text" required value={form.url} onChange={(e) => setForm({...form, url: e.target.value})} className={`w-full border focus:border-blue-500/50 rounded-3xl px-8 py-5 text-sm font-bold outline-none transition-all shadow-inner ${isDarkMode ? 'bg-black/40 border-slate-800 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`} />
+              </div>
+            </div>
+            <div className="space-y-6">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Setor Operacional</label>
+              <div className="grid grid-cols-3 gap-4">
+                {SECTORS_LIST.map(cat => (
+                  <button key={cat} type="button" onClick={() => setForm({...form, category: cat})} className={`py-5 rounded-3xl text-[10px] font-black uppercase tracking-tighter transition-all border-2 ${form.category === cat ? 'bg-blue-600 border-blue-400 text-white shadow-xl scale-105' : isDarkMode ? 'bg-black/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}>{cat}</button>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-4 pt-8">
+              <button type="button" onClick={onClose} className={`flex-1 px-8 py-6 rounded-[2rem] text-xs font-black uppercase tracking-widest transition-all italic ${isDarkMode ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Abortar</button>
+              <button type="submit" className={`flex-[2] px-12 py-6 rounded-[2rem] text-xs font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-white text-slate-950 shadow-white/10' : 'bg-slate-900 text-white shadow-black/10'}`}>Sincronizar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
