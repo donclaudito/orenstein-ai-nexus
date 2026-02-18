@@ -15,6 +15,8 @@ export default function Sidebar({
   setActiveApp,
   currentWorkspace,
   activeWsId,
+  setActiveWsId,
+  workspaces,
   apps,
   collapsedSectors,
   toggleSectorCollapse,
