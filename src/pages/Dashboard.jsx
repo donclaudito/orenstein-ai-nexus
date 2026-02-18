@@ -171,10 +171,26 @@ export default function Dashboard() {
 
   const handleSaveWorkspace = (formData, editing) => {
     if (editing) {
-      updateWsMutation.mutate({ id: editing.id, data: { name: formData.name, description: formData.description } });
+      updateWsMutation.mutate({ id: editing.id, data: { name: formData.name, description: formData.description, icon_key: formData.icon_key, color: formData.color } });
     } else {
-      createWsMutation.mutate({ name: formData.name, description: formData.description, icon_key: 'LayoutGrid' });
+      const maxOrder = Math.max(...workspaces.map(w => w.order_index || 0), -1);
+      createWsMutation.mutate({ name: formData.name, description: formData.description, icon_key: formData.icon_key, color: formData.color, order_index: maxOrder + 1 });
     }
+  };
+
+  const handleToggleFavorite = (id, isFavorite) => {
+    updateWsMutation.mutate({ id, data: { is_favorite: isFavorite } });
+  };
+
+  const handleReorderWorkspace = (fromIndex, toIndex) => {
+    if (toIndex < 0 || toIndex >= workspaces.length) return;
+    const reordered = [...workspaces];
+    const [moved] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, moved);
+    
+    reordered.forEach((ws, index) => {
+      updateWsMutation.mutate({ id: ws.id, data: { order_index: index } });
+    });
   };
 
   const handleDeleteWorkspace = (e, id) => {
@@ -247,7 +263,7 @@ export default function Dashboard() {
               <AppsPanel isDarkMode={isDarkMode} activeCategory={activeCategory} setActiveCategory={setActiveCategory} filteredApps={filteredApps} archivedApps={archivedApps} onSelectApp={setActiveApp} onEditApp={handleEditApp} onDeleteApp={handleDeleteApp} onArchiveApp={handleArchiveApp} />
             )
           ) : activeTab === "Definições" ? (
-            <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} />
+            <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} onToggleFavorite={handleToggleFavorite} onReorder={handleReorderWorkspace} />
           ) : activeTab === "Terminal" ? (
             <div className="max-w-4xl mx-auto"><ActiveTerminal workspaceName={currentWorkspace.name} isDarkMode={isDarkMode} /></div>
           ) : activeTab === "Notas" ? (

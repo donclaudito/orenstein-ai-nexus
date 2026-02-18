@@ -2,10 +2,11 @@ import React from 'react';
 import {
   Layers, LayoutGrid, PackagePlus, FileText,
   Terminal as TerminalIcon, User, LogOut, Folder,
-  ChevronDown, ChevronUp, Box
+  ChevronDown, ChevronUp, Box, Star
 } from 'lucide-react';
 import { SECTORS_LIST } from './sectorStyles';
 import { ICON_MAP } from './iconMap';
+import { WORKSPACE_COLORS } from './workspaceColors';
 import Breadcrumbs from './Breadcrumbs';
 
 export default function Sidebar({
@@ -57,15 +58,25 @@ export default function Sidebar({
         <section>
           <p className={`px-4 text-[10px] font-black uppercase tracking-[0.3em] mb-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Workspaces</p>
           <div className="space-y-2">
-            {workspaces.map(ws => {
+            {workspaces
+              .sort((a, b) => {
+                if (a.is_favorite && !b.is_favorite) return -1;
+                if (!a.is_favorite && b.is_favorite) return 1;
+                return (a.order_index || 0) - (b.order_index || 0);
+              })
+              .map(ws => {
               const wsApps = apps.filter(app => app.workspace_id === ws.id);
               const isActive = activeWsId === ws.id;
               const WsIcon = ICON_MAP[ws.icon_key] || Box;
+              const wsColor = WORKSPACE_COLORS[ws.color || 'blue'];
               return (
                 <div key={ws.id} className="space-y-1">
-                  <button onClick={() => setActiveWsId(ws.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${isActive ? (isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-blue-50 text-blue-600 border border-blue-100') : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-transparent')}`}>
-                    {WsIcon}
+                  <button onClick={() => setActiveWsId(ws.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all relative ${isActive ? `${wsColor.light} ${wsColor.text} border ${wsColor.border}` : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-transparent')}`}>
+                    <div className={`p-1.5 rounded-lg ${isActive ? `${wsColor.bg} text-white shadow-lg` : ''}`}>
+                      {WsIcon}
+                    </div>
                     <span className="truncate flex-1 text-left uppercase tracking-tight">{ws.name}</span>
+                    {ws.is_favorite && <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />}
                   </button>
                   {isActive && wsApps.length > 0 && (
                     <div className="pl-4 space-y-1">
