@@ -38,21 +38,7 @@ export default function Sidebar({
         {/* Contexto Operacional */}
         <section>
           <p className={`px-4 text-[10px] font-black uppercase tracking-[0.3em] mb-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Contexto Operacional</p>
-          <div className="space-y-2">
-            {workspaces.map(ws => (
-              <button
-                key={ws.id}
-                onClick={() => { setActiveWsId(ws.id); setActiveTab("Aplicações"); setActiveApp(null); }}
-                className={`w-full flex items-center gap-4 px-5 py-5 rounded-[2.5rem] border transition-all ${ws.id === activeWsId ? (isDarkMode ? 'bg-blue-600 border-blue-400 shadow-xl text-white' : 'bg-blue-50 border-blue-200 text-blue-800 shadow-sm') : (isDarkMode ? 'bg-slate-900/40 border-slate-800/50 text-slate-400 hover:bg-slate-900/60' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm')}`}
-              >
-                <div className={`p-2 rounded-xl ${ws.id === activeWsId ? (isDarkMode ? 'bg-white/20' : 'bg-white shadow-sm') : (isDarkMode ? 'bg-slate-800/50' : 'bg-slate-100')}`}>
-                  {ICON_MAP[ws.icon_key] || <Box className="w-5 h-5" />}
-                </div>
-                <span className="text-xs font-black uppercase tracking-wide truncate flex-1 text-left">{ws.name}</span>
-              </button>
-            ))}
-          </div>
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4">
 
             <div className="pl-4 space-y-2 mt-6">
               {SECTORS_LIST.map(sector => {
