@@ -1,13 +1,14 @@
 import React, { memo } from 'react';
-import { Pencil, Trash2, ChevronRight } from 'lucide-react';
+import { Pencil, Trash2, ChevronRight, Archive } from 'lucide-react';
 import { getSectorStyles } from './sectorStyles';
 
-const AppCard = memo(({ app, isDarkMode, onSelect, onEdit, onDelete }) => {
+const AppCard = memo(({ app, isDarkMode, onSelect, onEdit, onDelete, onArchive }) => {
   const style = getSectorStyles(app.category, isDarkMode);
   return (
     <div onClick={() => onSelect(app)} className={`group relative ${isDarkMode ? 'bg-white/5 border-slate-200/10 shadow-2xl' : 'bg-white border-slate-200 shadow-xl'} backdrop-blur-md rounded-[2.5rem] p-8 border hover:border-blue-500/50 transition-all duration-500 cursor-pointer hover:-translate-y-2 overflow-hidden text-left`}>
       <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
         <button onClick={(e) => { e.stopPropagation(); onEdit(app); }} className="p-2.5 bg-blue-500/20 hover:bg-blue-500 text-blue-500 hover:text-white rounded-xl transition-all"><Pencil className="w-4 h-4" /></button>
+        {onArchive && <button onClick={(e) => { e.stopPropagation(); onArchive(app.id, true); }} className="p-2.5 bg-amber-500/20 hover:bg-amber-500 text-amber-500 hover:text-white rounded-xl transition-all"><Archive className="w-4 h-4" /></button>}
         <button onClick={(e) => { e.stopPropagation(); onDelete(app.id); }} className="p-2.5 bg-red-500/20 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all"><Trash2 className="w-4 h-4" /></button>
       </div>
       <div className={`w-14 h-14 ${style.bg} rounded-2xl flex items-center justify-center mb-8 border ${style.border} group-hover:scale-110 transition-transform duration-500`}>{style.icon}</div>
