@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { SECTORS_LIST } from './sectorStyles';
 
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave }) {
-  const [form, setForm] = useState({ name: '', url: '', category: 'Administrativo' });
+  const [form, setForm] = useState({ name: '', url: '', category: 'Administrativo', description: '' });
 
   useEffect(() => {
     if (appToEdit) {
-      setForm({ name: appToEdit.title, url: appToEdit.url, category: appToEdit.category });
+      setForm({ 
+        name: appToEdit.title, 
+        url: appToEdit.url, 
+        category: appToEdit.category,
+        description: appToEdit.description || ''
+      });
     } else {
-      setForm({ name: '', url: '', category: 'Administrativo' });
+      setForm({ name: '', url: '', category: 'Administrativo', description: '' });
     }
   }, [appToEdit, isOpen]);
 
@@ -21,7 +28,7 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
       title: form.name,
       url: form.url.startsWith('http') ? form.url : `https://${form.url}`,
       category: form.category,
-      description: appToEdit?.description || "Ativo materializado na rede Orenstein AI."
+      description: form.description || "Ativo materializado na rede Orenstein AI."
     }, appToEdit);
   };
 
@@ -42,6 +49,25 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
                 <input type="text" required value={form.url} onChange={(e) => setForm({...form, url: e.target.value})} className={`w-full border focus:border-blue-500/50 rounded-3xl px-8 py-5 text-sm font-bold outline-none transition-all shadow-inner ${isDarkMode ? 'bg-black/40 border-slate-800 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`} />
               </div>
             </div>
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Descrição Detalhada</label>
+              <div className={`rounded-3xl overflow-hidden border ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                <ReactQuill
+                  theme="snow"
+                  value={form.description}
+                  onChange={(value) => setForm({...form, description: value})}
+                  className={isDarkMode ? 'quill-dark' : ''}
+                  modules={{
+                    toolbar: [
+                      ['bold', 'italic', 'underline'],
+                      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                      ['link'],
+                      ['clean']
+                    ]
+                  }}
+                />
+              </div>
+            </div>
             <div className="space-y-6">
               <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Setor Operacional</label>
               <div className="grid grid-cols-3 gap-4">
@@ -57,6 +83,34 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
           </form>
         </div>
       </div>
+      <style>{`
+        .quill-dark .ql-toolbar {
+          background: rgba(0, 0, 0, 0.4);
+          border: none;
+          border-bottom: 1px solid rgb(30, 41, 59);
+        }
+        .quill-dark .ql-container {
+          background: rgba(0, 0, 0, 0.4);
+          color: white;
+          border: none;
+        }
+        .quill-dark .ql-editor.ql-blank::before {
+          color: rgb(100, 116, 139);
+        }
+        .quill-dark .ql-stroke {
+          stroke: rgb(148, 163, 184);
+        }
+        .quill-dark .ql-fill {
+          fill: rgb(148, 163, 184);
+        }
+        .quill-dark .ql-picker-label {
+          color: rgb(148, 163, 184);
+        }
+        .ql-editor {
+          min-height: 150px;
+          font-size: 14px;
+        }
+      `}</style>
     </div>
   );
 }

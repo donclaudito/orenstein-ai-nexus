@@ -101,6 +101,14 @@ export default function Dashboard() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['apps'] }),
   });
 
+  const archiveAppMutation = useMutation({
+    mutationFn: ({ id, isArchived }) => base44.entities.AppAsset.update(id, { is_archived: isArchived }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['apps'] });
+      setActiveApp(null);
+    },
+  });
+
   // --- DERIVED STATE ---
   const currentWorkspace = useMemo(() =>
     workspaces.find(ws => ws.id === activeWsId) || workspaces[0] || { name: 'Carregando...', icon_key: 'Briefcase' }
@@ -111,9 +119,14 @@ export default function Dashboard() {
       const matchesWs = app.workspace_id === activeWsId;
       const matchesCategory = activeCategory === "Todos" || app.category === activeCategory;
       const matchesSearch = app.title?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesWs && matchesCategory && matchesSearch;
+      const notArchived = !app.is_archived;
+      return matchesWs && matchesCategory && matchesSearch && notArchived;
     });
   }, [activeCategory, searchQuery, apps, activeWsId]);
+
+  const archivedApps = useMemo(() => {
+    return apps.filter(app => app.workspace_id === activeWsId && app.is_archived);
+  }, [apps, activeWsId]);
 
   // --- HANDLERS ---
   const toggleSectorCollapse = (sectorName) => setCollapsedSectors(prev => ({ ...prev, [sectorName]: !prev[sectorName] }));
@@ -138,6 +151,10 @@ export default function Dashboard() {
   const handleDeleteApp = (id) => {
     if (activeApp?.id === id) setActiveApp(null);
     deleteAppMutation.mutate(id);
+  };
+
+  const handleArchiveApp = (id, isArchived) => {
+    archiveAppMutation.mutate({ id, isArchived });
   };
 
   const handleSaveApp = (formData, editing) => {
@@ -225,9 +242,9 @@ export default function Dashboard() {
         <div className={`flex-1 overflow-y-auto p-12 custom-scrollbar ${isDarkMode ? 'bg-gradient-to-b from-[#020617] to-slate-950' : 'bg-slate-50'}`}>
           {activeTab === "Aplicações" ? (
             activeApp ? (
-              <AppViewer app={activeApp} isDarkMode={isDarkMode} onRefresh={() => setActiveApp(prev => ({...prev}))} />
+              <AppViewer app={activeApp} isDarkMode={isDarkMode} onRefresh={() => setActiveApp(prev => ({...prev}))} onArchive={() => handleArchiveApp(activeApp.id, true)} onDelete={() => handleDeleteApp(activeApp.id)} />
             ) : (
-              <AppsPanel isDarkMode={isDarkMode} activeCategory={activeCategory} setActiveCategory={setActiveCategory} filteredApps={filteredApps} onSelectApp={setActiveApp} onEditApp={handleEditApp} onDeleteApp={handleDeleteApp} />
+              <AppsPanel isDarkMode={isDarkMode} activeCategory={activeCategory} setActiveCategory={setActiveCategory} filteredApps={filteredApps} archivedApps={archivedApps} onSelectApp={setActiveApp} onEditApp={handleEditApp} onDeleteApp={handleDeleteApp} onArchiveApp={handleArchiveApp} />
             )
           ) : activeTab === "Definições" ? (
             <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} />
