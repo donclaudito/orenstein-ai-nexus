@@ -145,6 +145,8 @@ export default function Dashboard() {
       updateAppMutation.mutate({ id: editing.id, data: formData });
     } else {
       createAppMutation.mutate({ ...formData, workspace_id: activeWsId });
+      // Expandir o setor na sidebar
+      setCollapsedSectors(prev => ({ ...prev, [formData.category]: false }));
     }
     setActiveCategory(formData.category);
     setActiveTab("Aplicações");
