@@ -35,35 +35,49 @@ export default function Sidebar({
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 space-y-10 custom-scrollbar">
-        {/* Contexto Operacional */}
+        {/* Workspaces */}
         <section>
-          <p className={`px-4 text-[10px] font-black uppercase tracking-[0.3em] mb-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Contexto Operacional</p>
-          <div className="space-y-4">
-
-            <div className="pl-4 space-y-2 mt-6">
-              {SECTORS_LIST.map(sector => {
-                const sectorApps = apps.filter(app => app.workspace_id === activeWsId && app.category === sector);
-                if (sectorApps.length === 0) return null;
-                const isCollapsed = collapsedSectors[sector];
-                return (
-                  <div key={sector} className="space-y-1">
-                    <button onClick={() => toggleSectorCollapse(sector)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
-                      <div className="flex items-center gap-2"><Folder className={`w-3 h-3 transition-transform ${!isCollapsed ? 'rotate-12' : ''}`} />{sector}</div>
-                      {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
-                    </button>
-                    {!isCollapsed && (
-                      <div className="space-y-1">
-                        {sectorApps.map(app => (
-                          <button key={app.id} onClick={() => { setActiveApp(app); setActiveTab("Aplicações"); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-2xl text-[10px] font-bold uppercase transition-all ${activeApp?.id === app.id ? (isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'bg-blue-50 text-blue-600 border border-blue-100 shadow-sm') : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100')}`}>
-                            <span className="truncate">{app.title}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          <p className={`px-4 text-[10px] font-black uppercase tracking-[0.3em] mb-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Workspaces</p>
+          <div className="space-y-2">
+            {workspaces.map(ws => {
+              const wsApps = apps.filter(app => app.workspace_id === ws.id);
+              const isActive = activeWsId === ws.id;
+              const WsIcon = ICON_MAP[ws.icon_key] || Box;
+              return (
+                <div key={ws.id} className="space-y-1">
+                  <button onClick={() => setActiveWsId(ws.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${isActive ? (isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-blue-50 text-blue-600 border border-blue-100') : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5 border border-transparent' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-transparent')}`}>
+                    {WsIcon}
+                    <span className="truncate flex-1 text-left uppercase tracking-tight">{ws.name}</span>
+                  </button>
+                  {isActive && wsApps.length > 0 && (
+                    <div className="pl-4 space-y-1">
+                      {SECTORS_LIST.map(sector => {
+                        const sectorApps = wsApps.filter(app => app.category === sector);
+                        if (sectorApps.length === 0) return null;
+                        const isCollapsed = collapsedSectors[sector];
+                        return (
+                          <div key={sector} className="space-y-1">
+                            <button onClick={() => toggleSectorCollapse(sector)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
+                              <div className="flex items-center gap-2"><Folder className={`w-3 h-3 transition-transform ${!isCollapsed ? 'rotate-12' : ''}`} />{sector}</div>
+                              {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+                            </button>
+                            {!isCollapsed && (
+                              <div className="space-y-1">
+                                {sectorApps.map(app => (
+                                  <button key={app.id} onClick={() => { setActiveApp(app); setActiveTab("Aplicações"); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-2xl text-[10px] font-bold uppercase transition-all ${activeApp?.id === app.id ? (isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'bg-blue-50 text-blue-600 border border-blue-100 shadow-sm') : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100')}`}>
+                                    <span className="truncate">{app.title}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 
