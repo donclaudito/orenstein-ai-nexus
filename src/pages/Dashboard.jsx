@@ -185,6 +185,8 @@ export default function Dashboard() {
         setActiveApp={setActiveApp}
         currentWorkspace={currentWorkspace}
         activeWsId={activeWsId}
+        setActiveWsId={setActiveWsId}
+        workspaces={workspaces}
         apps={apps}
         collapsedSectors={collapsedSectors}
         toggleSectorCollapse={toggleSectorCollapse}
