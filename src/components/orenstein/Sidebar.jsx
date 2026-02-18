@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { SECTORS_LIST } from './sectorStyles';
 import { ICON_MAP } from './iconMap';
+import Breadcrumbs from './Breadcrumbs';
 
 export default function Sidebar({
   isDarkMode,
@@ -22,6 +23,16 @@ export default function Sidebar({
   toggleSectorCollapse,
   triggerNewApp
 }) {
+  const handleBreadcrumbNavigate = (level) => {
+    if (level === 'workspace') {
+      setActiveApp(null);
+      setActiveTab("Aplicações");
+    } else if (level === 'sector') {
+      setActiveApp(null);
+      setActiveTab("Aplicações");
+    }
+  };
+
   return (
     <aside className={`w-80 backdrop-blur-2xl border-r flex flex-col z-30 ${isDarkMode ? 'bg-slate-950/40 border-slate-800/50' : 'bg-white border-slate-200'}`}>
       <div className="p-8 mb-4">
@@ -33,6 +44,13 @@ export default function Sidebar({
           </div>
         </div>
       </div>
+
+      <Breadcrumbs 
+        isDarkMode={isDarkMode}
+        currentWorkspace={currentWorkspace}
+        activeApp={activeApp}
+        onNavigate={handleBreadcrumbNavigate}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 space-y-10 custom-scrollbar">
         {/* Workspaces */}
