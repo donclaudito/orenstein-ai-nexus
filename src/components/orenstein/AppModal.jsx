@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { SECTORS_LIST } from './sectorStyles';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave }) {
-  const [form, setForm] = useState({ name: '', url: '', category: 'Administrativo', description: '' });
+  const [form, setForm] = useState({ name: '', url: '', category: '', description: '' });
+  
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => base44.entities.Category.list('order_index'),
+    initialData: [],
+  });
 
   useEffect(() => {
     if (appToEdit) {
@@ -15,9 +22,9 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
         description: appToEdit.description || ''
       });
     } else {
-      setForm({ name: '', url: '', category: 'Administrativo', description: '' });
+      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '' });
     }
-  }, [appToEdit, isOpen]);
+  }, [appToEdit, isOpen, categories]);
 
   if (!isOpen) return null;
 
@@ -70,11 +77,15 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
             </div>
             <div className="space-y-6">
               <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Setor Operacional</label>
-              <div className="grid grid-cols-3 gap-4">
-                {SECTORS_LIST.map(cat => (
-                  <button key={cat} type="button" onClick={() => setForm({...form, category: cat})} className={`py-5 rounded-3xl text-[10px] font-black uppercase tracking-tighter transition-all border-2 ${form.category === cat ? 'bg-blue-600 border-blue-400 text-white shadow-xl scale-105' : isDarkMode ? 'bg-black/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}>{cat}</button>
-                ))}
-              </div>
+              {categories.length === 0 ? (
+                <p className={`text-sm italic ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Nenhuma categoria criada. Configure-as em Gestão Workspaces.</p>
+              ) : (
+                <div className="grid grid-cols-3 gap-4">
+                  {categories.map(cat => (
+                    <button key={cat.id} type="button" onClick={() => setForm({...form, category: cat.name})} className={`py-5 rounded-3xl text-[10px] font-black uppercase tracking-tighter transition-all border-2 ${form.category === cat.name ? 'bg-blue-600 border-blue-400 text-white shadow-xl scale-105' : isDarkMode ? 'bg-black/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}>{cat.name}</button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex gap-4 pt-8">
               <button type="button" onClick={onClose} className={`flex-1 px-8 py-6 rounded-[2rem] text-xs font-black uppercase tracking-widest transition-all italic ${isDarkMode ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Abortar</button>

@@ -13,6 +13,8 @@ import WorkspaceSettings from '../components/orenstein/WorkspaceSettings';
 import AppViewer from '../components/orenstein/AppViewer';
 import AppsPanel from '../components/orenstein/AppsPanel';
 import KernelNotes from '../components/orenstein/KernelNotes';
+import CategorySettings from '../components/orenstein/CategorySettings';
+import CategoryModal from '../components/orenstein/CategoryModal';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -27,6 +29,8 @@ export default function Dashboard() {
   const [wsToEdit, setWsToEdit] = useState(null);
   const [isAppModalOpen, setIsAppModalOpen] = useState(false);
   const [appToEdit, setAppToEdit] = useState(null);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -40,6 +44,12 @@ export default function Dashboard() {
   const { data: apps = [], isLoading: appsLoading } = useQuery({
     queryKey: ['apps'],
     queryFn: () => base44.entities.AppAsset.list('-created_date'),
+    initialData: [],
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => base44.entities.Category.list('order_index'),
     initialData: [],
   });
 
@@ -106,6 +116,31 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       setActiveApp(null);
+    },
+  });
+
+  const createCategoryMutation = useMutation({
+    mutationFn: (data) => base44.entities.Category.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setIsCategoryModalOpen(false);
+      setCategoryToEdit(null);
+    },
+  });
+
+  const updateCategoryMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Category.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      setIsCategoryModalOpen(false);
+      setCategoryToEdit(null);
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: (id) => base44.entities.Category.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
@@ -209,6 +244,37 @@ export default function Dashboard() {
     setIsWsModalOpen(true);
   };
 
+  const handleSaveCategory = (formData, editing) => {
+    if (editing) {
+      updateCategoryMutation.mutate({ id: editing.id, data: formData });
+    } else {
+      const maxOrder = Math.max(...categories.map(c => c.order_index || 0), -1);
+      createCategoryMutation.mutate({ ...formData, order_index: maxOrder + 1 });
+    }
+  };
+
+  const handleDeleteCategory = (e, id) => {
+    e?.stopPropagation();
+    deleteCategoryMutation.mutate(id);
+  };
+
+  const triggerEditCategory = (e, cat) => {
+    e?.stopPropagation();
+    setCategoryToEdit(cat);
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleReorderCategory = (fromIndex, toIndex) => {
+    if (toIndex < 0 || toIndex >= categories.length) return;
+    const reordered = [...categories];
+    const [moved] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, moved);
+    
+    reordered.forEach((cat, index) => {
+      updateCategoryMutation.mutate({ id: cat.id, data: { order_index: index } });
+    });
+  };
+
   return (
     <div className={`flex h-screen transition-colors duration-500 font-sans overflow-hidden selection:bg-blue-500/30 ${isDarkMode ? 'bg-[#020617] text-slate-200' : 'bg-slate-50 text-slate-900'}`}>
       
@@ -263,7 +329,16 @@ export default function Dashboard() {
               <AppsPanel isDarkMode={isDarkMode} activeCategory={activeCategory} setActiveCategory={setActiveCategory} filteredApps={filteredApps} archivedApps={archivedApps} onSelectApp={setActiveApp} onEditApp={handleEditApp} onDeleteApp={handleDeleteApp} onArchiveApp={handleArchiveApp} />
             )
           ) : activeTab === "Definições" ? (
-            <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} onToggleFavorite={handleToggleFavorite} onReorder={handleReorderWorkspace} />
+            <div className="space-y-16">
+              <div>
+                <h2 className={`text-3xl font-black uppercase italic mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Workspaces</h2>
+                <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} onToggleFavorite={handleToggleFavorite} onReorder={handleReorderWorkspace} />
+              </div>
+              <div>
+                <h2 className={`text-3xl font-black uppercase italic mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Categorias</h2>
+                <CategorySettings isDarkMode={isDarkMode} categories={categories} onEdit={triggerEditCategory} onDelete={handleDeleteCategory} onCreateNew={() => { setCategoryToEdit(null); setIsCategoryModalOpen(true); }} onReorder={handleReorderCategory} />
+              </div>
+            </div>
           ) : activeTab === "Terminal" ? (
             <div className="max-w-4xl mx-auto"><ActiveTerminal workspaceName={currentWorkspace.name} isDarkMode={isDarkMode} /></div>
           ) : activeTab === "Notas" ? (
@@ -275,6 +350,7 @@ export default function Dashboard() {
       {/* MODALS */}
       <AppModal isDarkMode={isDarkMode} isOpen={isAppModalOpen} appToEdit={appToEdit} onClose={() => { setIsAppModalOpen(false); setAppToEdit(null); }} onSave={handleSaveApp} />
       <WsModal isDarkMode={isDarkMode} isOpen={isWsModalOpen} wsToEdit={wsToEdit} onClose={() => { setIsWsModalOpen(false); setWsToEdit(null); }} onSave={handleSaveWorkspace} />
+      <CategoryModal isDarkMode={isDarkMode} isOpen={isCategoryModalOpen} categoryToEdit={categoryToEdit} onClose={() => { setIsCategoryModalOpen(false); setCategoryToEdit(null); }} onSave={handleSaveCategory} />
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
