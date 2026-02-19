@@ -12,7 +12,7 @@ export default function WorkspaceSettings({ isDarkMode, workspaces, activeWsId, 
           <p className="text-blue-500 font-black text-[10px] uppercase tracking-[0.4em]">Gestão de Contextos Operacionais</p>
         </div>
         <button onClick={onCreateNew} className={`flex items-center gap-3 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl hover:scale-105 active:scale-95 ${isDarkMode ? 'bg-white text-slate-950 shadow-white/5' : 'bg-slate-900 text-white shadow-black/10'}`}>
-          <Box className="w-4 h-4" /> Materializar Novo Contexto
+          <Box className="w-4 h-4" /> Criar Novo Workspace
         </button>
       </div>
 
