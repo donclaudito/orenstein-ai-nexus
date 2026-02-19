@@ -64,7 +64,7 @@ export default function WorkspaceSettings({ isDarkMode, workspaces, activeWsId, 
                 </td>
                 <td className={`px-8 py-10 text-sm font-medium max-w-md leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ws.description}</td>
                 <td className="px-8 py-10 text-right">
-                  <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                  <div className="flex items-center justify-end gap-3 transition-all">
                     <button onClick={(e) => onEdit(e, ws)} className={`p-4 rounded-2xl transition-all border ${isDarkMode ? 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500 hover:text-white' : 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-600 hover:text-white shadow-sm'}`}><Pencil className="w-5 h-5" /></button>
                     <button onClick={(e) => onDelete(e, ws.id)} className={`p-4 rounded-2xl transition-all border ${workspaces.length > 1 ? (isDarkMode ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500 hover:text-white shadow-red-500/10' : 'bg-red-50 text-red-600 border-red-100 hover:bg-red-600 hover:text-white shadow-sm') : (isDarkMode ? 'bg-slate-800 text-slate-600 cursor-not-allowed' : 'bg-slate-100 text-slate-300 cursor-not-allowed')}`} disabled={workspaces.length <= 1}><Trash2 className="w-5 h-5" /></button>
                   </div>
