@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stethoscope, BookOpen, Briefcase } from 'lucide-react';
 
-export const SECTORS_LIST = ["Administrativo", "Médico", "Orientações"];
+export const SECTORS_LIST = ["Administrativo", "Médico", "Cirurgia", "Orientações"];
 
 export const getSectorStyles = (category, isDarkMode) => {
   switch (category) {
