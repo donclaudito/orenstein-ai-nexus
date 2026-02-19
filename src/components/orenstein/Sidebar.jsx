@@ -4,7 +4,7 @@ import {
   Terminal as TerminalIcon, User, LogOut, Folder,
   ChevronDown, ChevronUp, Box, Star
 } from 'lucide-react';
-import { SECTORS_LIST } from './sectorStyles';
+import { SECTORS_LIST, getSectorIcon } from './sectorStyles';
 import { ICON_MAP } from './iconMap';
 import { WORKSPACE_COLORS } from './workspaceColors';
 import Breadcrumbs from './Breadcrumbs';
@@ -87,7 +87,7 @@ export default function Sidebar({
                         return (
                           <div key={sector} className="space-y-1">
                             <button onClick={() => toggleSectorCollapse(sector)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
-                              <div className="flex items-center gap-2"><Folder className={`w-3 h-3 transition-transform ${!isCollapsed ? 'rotate-12' : ''}`} />{sector}</div>
+                              <div className="flex items-center gap-2">{getSectorIcon(sector)}{sector}</div>
                               {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
                             </button>
                             {!isCollapsed && (
