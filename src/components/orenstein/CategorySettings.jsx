@@ -28,14 +28,16 @@ export default function CategorySettings({ isDarkMode, categories, onEdit, onDel
                     <button 
                       onClick={() => onReorder(index, index - 1)} 
                       disabled={index === 0}
-                      className={`p-2 rounded-lg transition-all ${index === 0 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100')}`}
+                      className={`p-2 rounded-lg transition-all ${index === 0 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-400 hover:text-white hover:bg-blue-600' : 'text-slate-500 hover:text-white hover:bg-blue-600')}`}
+                      title="Mover para cima"
                     >
                       <GripVertical className="w-4 h-4" />
                     </button>
                     <button 
                       onClick={() => onReorder(index, index + 1)} 
                       disabled={index === categories.length - 1}
-                      className={`p-2 rounded-lg transition-all ${index === categories.length - 1 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100')}`}
+                      className={`p-2 rounded-lg transition-all ${index === categories.length - 1 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-400 hover:text-white hover:bg-blue-600' : 'text-slate-500 hover:text-white hover:bg-blue-600')}`}
+                      title="Mover para baixo"
                     >
                       <GripVertical className="w-4 h-4 rotate-180" />
                     </button>
