@@ -90,12 +90,13 @@ export default function Sidebar({
                         const categoryApps = wsApps.filter(app => app.category === category.name);
                         if (categoryApps.length === 0) return null;
                         const isCollapsed = collapsedSectors[category.name];
-                        const CategoryIcon = ICON_MAP[category.icon_key] || Box;
                         return (
                           <div key={category.id} className="space-y-1">
                             <button onClick={() => toggleSectorCollapse(category.name)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
                               <div className="flex items-center gap-2">
-                                <CategoryIcon className="w-3.5 h-3.5" />
+                                <span className="w-3.5 h-3.5 flex items-center justify-center">
+                                  {ICON_MAP[category.icon_key] || ICON_MAP['Package']}
+                                </span>
                                 {category.name}
                               </div>
                               {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
