@@ -348,7 +348,7 @@ export default function Dashboard() {
       </main>
 
       {/* MODALS */}
-      <AppModal isDarkMode={isDarkMode} isOpen={isAppModalOpen} appToEdit={appToEdit} onClose={() => { setIsAppModalOpen(false); setAppToEdit(null); }} onSave={handleSaveApp} />
+      <AppModal isDarkMode={isDarkMode} isOpen={isAppModalOpen} appToEdit={appToEdit} onClose={() => { setIsAppModalOpen(false); setAppToEdit(null); }} onSave={handleSaveApp} workspaces={workspaces} activeWsId={activeWsId} />
       <WsModal isDarkMode={isDarkMode} isOpen={isWsModalOpen} wsToEdit={wsToEdit} onClose={() => { setIsWsModalOpen(false); setWsToEdit(null); }} onSave={handleSaveWorkspace} />
       <CategoryModal isDarkMode={isDarkMode} isOpen={isCategoryModalOpen} categoryToEdit={categoryToEdit} onClose={() => { setIsCategoryModalOpen(false); setCategoryToEdit(null); }} onSave={handleSaveCategory} />
 

@@ -4,8 +4,8 @@ import 'react-quill/dist/quill.snow.css';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 
-export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave }) {
-  const [form, setForm] = useState({ name: '', url: '', category: '', description: '' });
+export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave, workspaces, activeWsId }) {
+  const [form, setForm] = useState({ name: '', url: '', category: '', description: '', workspace_id: '' });
   
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -19,12 +19,13 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
         name: appToEdit.title, 
         url: appToEdit.url, 
         category: appToEdit.category,
-        description: appToEdit.description || ''
+        description: appToEdit.description || '',
+        workspace_id: appToEdit.workspace_id || activeWsId || ''
       });
     } else {
-      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '' });
+      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '', workspace_id: activeWsId || '' });
     }
-  }, [appToEdit, isOpen, categories]);
+  }, [appToEdit, isOpen, categories, activeWsId]);
 
   if (!isOpen) return null;
 
@@ -35,7 +36,8 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
       title: form.name,
       url: form.url.startsWith('http') ? form.url : `https://${form.url}`,
       category: form.category,
-      description: form.description || "Ativo materializado na rede Orenstein AI."
+      description: form.description || "Ativo materializado na rede Orenstein AI.",
+      workspace_id: form.workspace_id
     }, appToEdit);
   };
 
@@ -75,6 +77,19 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
                 />
               </div>
             </div>
+            <div className="space-y-6">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Workspace</label>
+              {workspaces?.length === 0 ? (
+                <p className={`text-sm italic ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Nenhum workspace disponível.</p>
+              ) : (
+                <div className="grid grid-cols-3 gap-4">
+                  {workspaces?.map(ws => (
+                    <button key={ws.id} type="button" onClick={() => setForm({...form, workspace_id: ws.id})} className={`py-5 rounded-3xl text-[10px] font-black uppercase tracking-tighter transition-all border-2 ${form.workspace_id === ws.id ? 'bg-blue-600 border-blue-400 text-white shadow-xl scale-105' : isDarkMode ? 'bg-black/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`}>{ws.name}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div className="space-y-6">
               <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Setor Operacional</label>
               {categories.length === 0 ? (
