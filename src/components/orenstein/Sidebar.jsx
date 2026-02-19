@@ -4,10 +4,11 @@ import {
   Terminal as TerminalIcon, User, LogOut, Folder,
   ChevronDown, ChevronUp, Box, Star
 } from 'lucide-react';
-import { SECTORS_LIST, getSectorIcon } from './sectorStyles';
 import { ICON_MAP } from './iconMap';
 import { WORKSPACE_COLORS } from './workspaceColors';
 import Breadcrumbs from './Breadcrumbs';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Sidebar({
   isDarkMode,
@@ -24,6 +25,11 @@ export default function Sidebar({
   toggleSectorCollapse,
   triggerNewApp
 }) {
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => base44.entities.Category.list('order_index'),
+    initialData: [],
+  });
   const handleBreadcrumbNavigate = (level) => {
     if (level === 'workspace') {
       setActiveApp(null);
@@ -80,19 +86,23 @@ export default function Sidebar({
                   </button>
                   {isActive && wsApps.length > 0 && (
                     <div className="pl-4 space-y-1">
-                      {SECTORS_LIST.map(sector => {
-                        const sectorApps = wsApps.filter(app => app.category === sector);
-                        if (sectorApps.length === 0) return null;
-                        const isCollapsed = collapsedSectors[sector];
+                      {categories.map(category => {
+                        const categoryApps = wsApps.filter(app => app.category === category.name);
+                        if (categoryApps.length === 0) return null;
+                        const isCollapsed = collapsedSectors[category.name];
+                        const CategoryIcon = ICON_MAP[category.icon_key] || Box;
                         return (
-                          <div key={sector} className="space-y-1">
-                            <button onClick={() => toggleSectorCollapse(sector)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
-                              <div className="flex items-center gap-2">{getSectorIcon(sector)}{sector}</div>
+                          <div key={category.id} className="space-y-1">
+                            <button onClick={() => toggleSectorCollapse(category.name)} className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'}`}>
+                              <div className="flex items-center gap-2">
+                                <CategoryIcon className="w-3.5 h-3.5" />
+                                {category.name}
+                              </div>
                               {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
                             </button>
                             {!isCollapsed && (
                               <div className="space-y-1">
-                                {sectorApps.map(app => (
+                                {categoryApps.map(app => (
                                   <button key={app.id} onClick={() => { setActiveApp(app); setActiveTab("Aplicações"); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-2xl text-[10px] font-bold uppercase transition-all ${activeApp?.id === app.id ? (isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'bg-blue-50 text-blue-600 border border-blue-100 shadow-sm') : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100')}`}>
                                     <span className="truncate">{app.title}</span>
                                   </button>
