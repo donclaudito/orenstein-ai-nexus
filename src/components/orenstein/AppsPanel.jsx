@@ -16,35 +16,36 @@ export default function AppsPanel({ isDarkMode, activeCategory, setActiveCategor
   });
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
           <button
             onClick={() => setShowArchived(false)}
-            className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all ${!showArchived ? 'bg-blue-600 text-white shadow-xl' : (isDarkMode ? 'bg-slate-900/40 text-slate-500' : 'bg-white text-slate-500')}`}
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${!showArchived ? 'bg-blue-600 text-white shadow-xl' : (isDarkMode ? 'bg-slate-900/40 text-slate-500' : 'bg-white text-slate-500')}`}
           >
-            <PackageOpen className="w-4 h-4 inline mr-2" />
+            <PackageOpen className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
             Ativos
           </button>
           <button
             onClick={() => setShowArchived(true)}
-            className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all ${showArchived ? 'bg-amber-600 text-white shadow-xl' : (isDarkMode ? 'bg-slate-900/40 text-slate-500' : 'bg-white text-slate-500')}`}
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${showArchived ? 'bg-amber-600 text-white shadow-xl' : (isDarkMode ? 'bg-slate-900/40 text-slate-500' : 'bg-white text-slate-500')}`}
           >
-            <Archive className="w-4 h-4 inline mr-2" />
-            Arquivados ({archivedApps?.length || 0})
+            <Archive className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Arquivados ({archivedApps?.length || 0})</span>
+            <span className="sm:hidden">Arq. ({archivedApps?.length || 0})</span>
           </button>
         </div>
       </div>
 
       {!showArchived && (
         <>
-      <div className="flex flex-wrap gap-3 mb-16">
-        <button onClick={() => setActiveCategory("Todos")} className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${activeCategory === "Todos" ? 'bg-blue-600 border-blue-400 text-white shadow-xl shadow-blue-500/40' : isDarkMode ? 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400 hover:text-slate-800'}`}>Todos</button>
+      <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-16">
+        <button onClick={() => setActiveCategory("Todos")} className={`px-4 sm:px-8 py-2 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${activeCategory === "Todos" ? 'bg-blue-600 border-blue-400 text-white shadow-xl shadow-blue-500/40' : isDarkMode ? 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400 hover:text-slate-800'}`}>Todos</button>
         {categories.map(cat => (
-          <button key={cat.id} onClick={() => setActiveCategory(cat.name)} className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${activeCategory === cat.name ? 'bg-blue-600 border-blue-400 text-white shadow-xl shadow-blue-500/40' : isDarkMode ? 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400 hover:text-slate-800'}`}>{cat.name}</button>
+          <button key={cat.id} onClick={() => setActiveCategory(cat.name)} className={`px-4 sm:px-8 py-2 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all border ${activeCategory === cat.name ? 'bg-blue-600 border-blue-400 text-white shadow-xl shadow-blue-500/40' : isDarkMode ? 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400 hover:text-slate-800'}`}>{cat.name}</button>
         ))}
       </div>
 
-      <div className="space-y-24">
+      <div className="space-y-12 sm:space-y-24">
         {categories.map(category => {
           const appsInCategory = filteredApps.filter(app => app.category === category.name);
           if (activeCategory !== "Todos" && activeCategory !== category.name) return null;
@@ -64,7 +65,7 @@ export default function AppsPanel({ isDarkMode, activeCategory, setActiveCategor
                   <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{appsInCategory.length} Ativo{appsInCategory.length === 1 ? '' : 's'}</span>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
                 {appsInCategory.map(app => <AppCard key={app.id} app={app} isDarkMode={isDarkMode} onSelect={onSelectApp} onEdit={onEditApp} onDelete={onDeleteApp} onArchive={onArchiveApp} />)}
               </div>
             </div>
@@ -85,7 +86,7 @@ export default function AppsPanel({ isDarkMode, activeCategory, setActiveCategor
               <p className="font-bold text-lg">Nenhum aplicativo arquivado</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
               {archivedApps.map(app => (
                 <div key={app.id} className="relative">
                   <AppCard

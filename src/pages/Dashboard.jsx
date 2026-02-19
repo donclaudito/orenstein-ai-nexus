@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Sun, Moon, Maximize2 } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Maximize2, Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import DigitalClock from '../components/orenstein/DigitalClock';
 import ActiveTerminal from '../components/orenstein/ActiveTerminal';
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [appToEdit, setAppToEdit] = useState(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -278,50 +280,82 @@ export default function Dashboard() {
   return (
     <div className={`flex h-screen transition-colors duration-500 font-sans overflow-hidden selection:bg-blue-500/30 ${isDarkMode ? 'bg-[#020617] text-slate-200' : 'bg-slate-50 text-slate-900'}`}>
       
-      <Sidebar
-        isDarkMode={isDarkMode}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        activeApp={activeApp}
-        setActiveApp={setActiveApp}
-        currentWorkspace={currentWorkspace}
-        activeWsId={activeWsId}
-        setActiveWsId={setActiveWsId}
-        workspaces={workspaces}
-        apps={apps}
-        collapsedSectors={collapsedSectors}
-        toggleSectorCollapse={toggleSectorCollapse}
-        triggerNewApp={triggerNewApp}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar
+          isDarkMode={isDarkMode}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          activeApp={activeApp}
+          setActiveApp={setActiveApp}
+          currentWorkspace={currentWorkspace}
+          activeWsId={activeWsId}
+          setActiveWsId={setActiveWsId}
+          workspaces={workspaces}
+          apps={apps}
+          collapsedSectors={collapsedSectors}
+          toggleSectorCollapse={toggleSectorCollapse}
+          triggerNewApp={triggerNewApp}
+        />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <SheetContent side="left" className={`p-0 w-full sm:w-80 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
+          <Sidebar
+            isDarkMode={isDarkMode}
+            activeTab={activeTab}
+            setActiveTab={(tab) => { setActiveTab(tab); setIsSidebarOpen(false); }}
+            activeApp={activeApp}
+            setActiveApp={(app) => { setActiveApp(app); setIsSidebarOpen(false); }}
+            currentWorkspace={currentWorkspace}
+            activeWsId={activeWsId}
+            setActiveWsId={(id) => { setActiveWsId(id); setIsSidebarOpen(false); }}
+            workspaces={workspaces}
+            apps={apps}
+            collapsedSectors={collapsedSectors}
+            toggleSectorCollapse={toggleSectorCollapse}
+            triggerNewApp={() => { triggerNewApp(); setIsSidebarOpen(false); }}
+          />
+        </SheetContent>
+      </Sheet>
 
       <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* HEADER */}
-        <header className={`h-24 backdrop-blur-3xl border-b flex items-center justify-between px-12 z-20 ${isDarkMode ? 'bg-slate-950/20 border-slate-800/50' : 'bg-white/80 border-slate-200'}`}>
-          <div className="flex items-center gap-6">
+        <header className={`h-16 lg:h-24 backdrop-blur-3xl border-b flex items-center justify-between px-4 sm:px-8 lg:px-12 z-20 ${isDarkMode ? 'bg-slate-950/20 border-slate-800/50' : 'bg-white/80 border-slate-200'}`}>
+          <div className="flex items-center gap-3 sm:gap-6">
+            <button onClick={() => setIsSidebarOpen(true)} className={`lg:hidden p-2 rounded-xl transition-all ${isDarkMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'}`}>
+              <Menu className="w-6 h-6" />
+            </button>
             {activeApp ? (
-              <button onClick={() => setActiveApp(null)} className={`flex items-center gap-3 px-6 py-3 border rounded-full transition-all font-black text-xs uppercase italic tracking-widest ${isDarkMode ? 'text-blue-400 bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20' : 'text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100'}`}>
-                <ArrowLeft className="w-4 h-4" /> Voltar ao Painel
+              <button onClick={() => setActiveApp(null)} className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 border rounded-full transition-all font-black text-[10px] sm:text-xs uppercase italic tracking-widest ${isDarkMode ? 'text-blue-400 bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20' : 'text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100'}`}>
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Voltar ao Painel</span><span className="sm:hidden">Voltar</span>
               </button>
             ) : (
-              <div className="flex items-center gap-3 pt-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <h2 className={`text-xl font-black italic uppercase tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Orenstein AI</h2>
+              <div className="flex items-center gap-2 sm:gap-3 pt-2">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <h2 className={`text-sm sm:text-xl font-black italic uppercase tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Orenstein AI</h2>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-3.5 rounded-full border transition-all duration-500 flex items-center gap-3 group ${isDarkMode ? 'bg-slate-900 border-slate-800 text-amber-400 hover:bg-slate-800 shadow-xl shadow-amber-500/5' : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200 shadow-lg'}`} title={isDarkMode ? "Visão Clara" : "Visão Noturna"}>
-              {isDarkMode ? <Sun className="w-5 h-5 fill-current" /> : <Moon className="w-5 h-5 fill-current" />}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-2.5 sm:p-3.5 rounded-full border transition-all duration-500 flex items-center gap-3 group ${isDarkMode ? 'bg-slate-900 border-slate-800 text-amber-400 hover:bg-slate-800 shadow-xl shadow-amber-500/5' : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200 shadow-lg'}`} title={isDarkMode ? "Visão Clara" : "Visão Noturna"}>
+              {isDarkMode ? <Sun className="w-4 h-4 sm:w-5 sm:h-5 fill-current" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />}
             </button>
-            <DigitalClock isDarkMode={isDarkMode} />
-            <button onClick={handleOpenNewWindow} className={`flex items-center gap-3 px-8 py-3.5 rounded-full text-xs font-black transition-all shadow-xl uppercase tracking-widest ${isDarkMode ? 'bg-white text-slate-950 hover:bg-blue-50 shadow-white/10' : 'bg-slate-900 text-white hover:bg-black shadow-slate-900/10'}`}>
-              <Maximize2 className="w-4 h-4" /> Nova Janela
+            <div className="hidden sm:block">
+              <DigitalClock isDarkMode={isDarkMode} />
+            </div>
+            <button onClick={handleOpenNewWindow} className={`hidden sm:flex items-center gap-3 px-6 lg:px-8 py-2.5 lg:py-3.5 rounded-full text-xs font-black transition-all shadow-xl uppercase tracking-widest ${isDarkMode ? 'bg-white text-slate-950 hover:bg-blue-50 shadow-white/10' : 'bg-slate-900 text-white hover:bg-black shadow-slate-900/10'}`}>
+              <Maximize2 className="w-4 h-4" /> <span className="hidden lg:inline">Nova Janela</span>
+            </button>
+            <button onClick={handleOpenNewWindow} className={`sm:hidden p-2.5 rounded-full transition-all shadow-xl ${isDarkMode ? 'bg-white text-slate-950' : 'bg-slate-900 text-white'}`}>
+              <Maximize2 className="w-4 h-4" />
             </button>
           </div>
         </header>
 
         {/* CONTENT */}
-        <div className={`flex-1 overflow-y-auto p-12 custom-scrollbar ${isDarkMode ? 'bg-gradient-to-b from-[#020617] to-slate-950' : 'bg-slate-50'}`}>
+        <div className={`flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12 custom-scrollbar ${isDarkMode ? 'bg-gradient-to-b from-[#020617] to-slate-950' : 'bg-slate-50'}`}>
           {activeTab === "Aplicações" ? (
             activeApp ? (
               <AppViewer app={activeApp} isDarkMode={isDarkMode} onRefresh={() => setActiveApp(prev => ({...prev}))} onArchive={() => handleArchiveApp(activeApp.id, true)} onDelete={() => handleDeleteApp(activeApp.id)} />
