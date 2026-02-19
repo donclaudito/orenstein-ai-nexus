@@ -6,11 +6,7 @@ import { WORKSPACE_COLORS } from './workspaceColors';
 export default function WorkspaceSettings({ isDarkMode, workspaces, activeWsId, onEdit, onDelete, onCreateNew, onToggleFavorite, onReorder }) {
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-end justify-between mb-12">
-        <div>
-          <h2 className={`text-5xl font-black tracking-tighter uppercase italic mb-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Configurações</h2>
-          <p className="text-blue-500 font-black text-[10px] uppercase tracking-[0.4em]">Gestão de Contextos Operacionais</p>
-        </div>
+      <div className="flex items-end justify-end mb-12">
         <button onClick={onCreateNew} className={`flex items-center gap-3 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-xl hover:scale-105 active:scale-95 ${isDarkMode ? 'bg-white text-slate-950 shadow-white/5' : 'bg-slate-900 text-white shadow-black/10'}`}>
           <Box className="w-4 h-4" /> Criar Novo Workspace
         </button>
