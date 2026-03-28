@@ -366,7 +366,7 @@ export default function Dashboard() {
             <div className="space-y-16">
               <div>
                 <h2 className={`text-3xl font-black uppercase italic mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Workspaces</h2>
-                <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} onToggleFavorite={handleToggleFavorite} onReorder={handleReorderWorkspace} />
+                <WorkspaceSettings isDarkMode={isDarkMode} workspaces={workspaces} apps={apps} activeWsId={activeWsId} onEdit={triggerEditWorkspace} onDelete={handleDeleteWorkspace} onCreateNew={() => { setWsToEdit(null); setIsWsModalOpen(true); }} onToggleFavorite={handleToggleFavorite} onReorder={handleReorderWorkspace} onToggleActive={(id, isActive) => updateWsMutation.mutate({ id, data: { is_active: isActive } })} />
               </div>
               <div>
                 <h2 className={`text-3xl font-black uppercase italic mb-8 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Categorias</h2>
