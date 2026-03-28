@@ -1,0 +1,42 @@
+{
+  "name": "AppAsset",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Nome da aplica\u00e7\u00e3o"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o detalhada do ativo com formata\u00e7\u00e3o HTML"
+    },
+    "category": {
+      "type": "string",
+      "description": "Setor operacional (categoria)"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL da aplica\u00e7\u00e3o"
+    },
+    "workspace_id": {
+      "type": "string",
+      "description": "ID do workspace associado"
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se o aplicativo est\u00e1 arquivado"
+    },
+    "order_index": {
+      "type": "number",
+      "default": 0,
+      "description": "\u00cdndice de ordena\u00e7\u00e3o dentro da categoria"
+    }
+  },
+  "required": [
+    "title",
+    "url",
+    "workspace_id",
+    "category"
+  ]
+}
