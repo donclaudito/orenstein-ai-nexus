@@ -6,7 +6,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import DigitalClock from '../components/orenstein/DigitalClock';
 import ActiveTerminal from '../components/orenstein/ActiveTerminal';
-import Sidebar from '../components/orenstein/Sidebar.jsx';
+import Sidebar from '../components/orenstein/Sidebar';
+
 import AppCard from '../components/orenstein/AppCard';
 import AppModal from '../components/orenstein/AppModal';
 import WsModal from '../components/orenstein/WsModal';
