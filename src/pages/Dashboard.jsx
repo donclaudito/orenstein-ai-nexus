@@ -219,12 +219,12 @@ export default function Dashboard() {
     updateWsMutation.mutate({ id, data: { is_favorite: isFavorite } });
   };
 
-  const handleReorderWorkspace = (fromIndex, toIndex) => {
-    if (toIndex < 0 || toIndex >= workspaces.length) return;
-    const reordered = [...workspaces];
+  const handleReorderWorkspace = (fromIndex, toIndex, sortedList) => {
+    const list = sortedList || workspaces;
+    if (toIndex < 0 || toIndex >= list.length) return;
+    const reordered = [...list];
     const [moved] = reordered.splice(fromIndex, 1);
     reordered.splice(toIndex, 0, moved);
-    
     reordered.forEach((ws, index) => {
       updateWsMutation.mutate({ id: ws.id, data: { order_index: index } });
     });
@@ -296,6 +296,7 @@ export default function Dashboard() {
           collapsedSectors={collapsedSectors}
           toggleSectorCollapse={toggleSectorCollapse}
           triggerNewApp={triggerNewApp}
+          onReorderWorkspace={handleReorderWorkspace}
         />
       </div>
 
@@ -316,6 +317,7 @@ export default function Dashboard() {
             collapsedSectors={collapsedSectors}
             toggleSectorCollapse={toggleSectorCollapse}
             triggerNewApp={() => { triggerNewApp(); setIsSidebarOpen(false); }}
+            onReorderWorkspace={handleReorderWorkspace}
           />
         </SheetContent>
       </Sheet>
