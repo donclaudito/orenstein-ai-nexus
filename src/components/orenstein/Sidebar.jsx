@@ -51,16 +51,35 @@ export default function Sidebar({
   // { [categoryName]: AppAsset[] }
   const [localAppsByCat, setLocalAppsByCat] = useState({});
 
+  // ── Apps mapeados por [wsId][categoryName] para suportar todos os WS expandidos
+  const [localAppsByWsAndCat, setLocalAppsByWsAndCat] = useState({});
+
   useEffect(() => {
-    const wsApps = apps.filter(a => a.workspace_id === activeWsId && !a.is_archived);
     const map = {};
-    categories.forEach(cat => {
-      map[cat.name] = wsApps
-        .filter(a => a.category === cat.name)
-        .sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
+    workspaces.forEach(ws => {
+      map[ws.id] = {};
+      const wsApps = apps.filter(a => a.workspace_id === ws.id && !a.is_archived);
+      categories.forEach(cat => {
+        map[ws.id][cat.name] = wsApps
+          .filter(a => a.category === cat.name)
+          .sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999));
+      });
     });
-    setLocalAppsByCat(map);
-  }, [apps, categories, activeWsId]);
+    setLocalAppsByWsAndCat(map);
+    // Mantém compatibilidade com localAppsByCat para o DnD do workspace ativo
+    if (activeWsId && map[activeWsId]) setLocalAppsByCat(map[activeWsId]);
+  }, [apps, categories, workspaces, activeWsId]);
+
+  // ── Workspaces expandidos: todos abertos por padrão, toggle manual ────────
+  // Inicializa com todos expandidos (undefined = expandido, true = colapsado pelo user)
+  const [collapsedWs, setCollapsedWs] = useState({});
+  const [isDraggingWs, setIsDraggingWs] = useState(false);
+
+  const toggleWsExpand = (wsId) => {
+    // Não permite fechar durante drag
+    if (isDraggingWs) return;
+    setCollapsedWs(prev => ({ ...prev, [wsId]: !prev[wsId] }));
+  };
 
   // ── Drag state for "move to X" overlay label ───────────────────────────────
   const [draggingOverCat, setDraggingOverCat] = useState(null);
@@ -68,6 +87,7 @@ export default function Sidebar({
 
   // ── Workspace drag end ─────────────────────────────────────────────────────
   const handleWsDragEnd = (result) => {
+    setIsDraggingWs(false);
     if (!result.destination) return;
     const { source, destination } = result;
     if (source.index === destination.index) return;
@@ -177,7 +197,7 @@ export default function Sidebar({
         {/* ── Workspaces (isolated DragDropContext) ─────────────────────── */}
         <section>
           <p className={`px-4 text-[10px] font-black uppercase tracking-[0.3em] mb-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Workspaces</p>
-          <DragDropContext onDragEnd={handleWsDragEnd}>
+          <DragDropContext onDragEnd={handleWsDragEnd} onDragStart={() => setIsDraggingWs(true)}>
             <Droppable droppableId="workspaces-list">
               {(provided) => (
                 <div className="space-y-2" ref={provided.innerRef} {...provided.droppableProps}>
@@ -222,15 +242,22 @@ export default function Sidebar({
                                 <span className="truncate flex-1 text-left uppercase tracking-tight">{ws.name}</span>
                                 {ws.is_favorite && <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />}
                               </button>
+                              {/* Toggle manual — não fecha durante drag */}
+                              <button
+                                onClick={() => toggleWsExpand(ws.id)}
+                                className={`p-1.5 rounded-xl flex-shrink-0 transition-colors ${isDarkMode ? 'text-slate-600 hover:text-slate-400' : 'text-slate-300 hover:text-slate-500'}`}
+                                title={collapsedWs[ws.id] ? 'Expandir' : 'Recolher'}
+                              >
+                                {collapsedWs[ws.id] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+                              </button>
                             </div>
 
-                            {/* ── Shared DragDropContext for ALL categories in this workspace ── */}
-                            {/* Workspaces ficam sempre expandidos para facilitar drag entre categorias */}
-                            {isActive && (
+                            {/* ── Todos os workspaces expandidos — colapso manual permitido ── */}
+                            {!collapsedWs[ws.id] && (
                               <div className="pl-6 space-y-1">
-                                <DragDropContext onDragEnd={handleAppDragEnd} onDragUpdate={handleAppDragUpdate} onDragStart={(s) => setDraggingAppId(s.draggableId)}>
+                                <DragDropContext onDragEnd={handleAppDragEnd} onDragUpdate={handleAppDragUpdate} onDragStart={(s) => { setDraggingAppId(s.draggableId); setActiveWsId(ws.id); }}>
                                   {categories.map(category => {
-                                    const catApps = localAppsByCat[category.name] || [];
+                                    const catApps = (localAppsByWsAndCat[ws.id]?.[category.name]) || (isActive ? localAppsByCat[category.name] : []) || [];
                                     // Categorias sempre expandidas para facilitar drag entre grupos
                                     const isCollapsed = false;
                                     const isBeingTargeted = draggingOverCat === category.name && draggingAppId;
@@ -261,7 +288,7 @@ export default function Sidebar({
                                               </span>
                                             )}
                                           </div>
-                                          {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+                                          {/* categorias sempre expandidas */}
                                         </button>
 
                                         {/* Apps droppable — shared type "app-item" enables cross-category drops */}
