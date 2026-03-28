@@ -10,6 +10,10 @@
       "type": "string",
       "description": "Descri\u00e7\u00e3o detalhada do ativo com formata\u00e7\u00e3o HTML"
     },
+    "card_summary": {
+      "type": "string",
+      "description": "Resumo curto para exibi\u00e7\u00e3o no cart\u00e3o (m\u00e1x. 80 caracteres)"
+    },
     "category": {
       "type": "string",
       "description": "Setor operacional (categoria)"

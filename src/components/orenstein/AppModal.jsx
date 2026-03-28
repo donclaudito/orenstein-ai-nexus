@@ -5,7 +5,8 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave, workspaces, activeWsId }) {
-  const [form, setForm] = useState({ name: '', url: '', category: '', description: '', workspace_id: '' });
+  const [form, setForm] = useState({ name: '', url: '', category: '', description: '', card_summary: '', workspace_id: '' });
+  const [suggestingResume, setSuggestingResume] = useState(false);
   
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -20,14 +21,41 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
         url: appToEdit.url, 
         category: appToEdit.category,
         description: appToEdit.description || '',
+        card_summary: appToEdit.card_summary || '',
         workspace_id: appToEdit.workspace_id || activeWsId || ''
       });
     } else {
-      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '', workspace_id: activeWsId || '' });
+      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '', card_summary: '', workspace_id: activeWsId || '' });
     }
   }, [appToEdit, isOpen, categories, activeWsId]);
 
   if (!isOpen) return null;
+
+  const handleSuggestResume = async () => {
+    const rawText = form.description?.replace(/<[^>]*>/g, '').trim();
+    if (!rawText) return;
+    setSuggestingResume(true);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `Você é um UX Writer especialista em interfaces médicas. 
+Com base na descrição abaixo de um aplicativo médico, gere um resumo conciso para exibição em um cartão de aplicativo.
+
+Regras obrigatórias:
+- Máximo de 80 caracteres
+- Foco no benefício direto ao médico (ex: "Evolução SOAP automática em segundos")
+- Linguagem humana, não técnica ou robótica
+- Sem jargões de IA
+- Evite começar com "Um", "O", "A ferramenta"
+- Prefira verbos de ação no presente
+
+Descrição:
+"${rawText}"
+
+Retorne APENAS o resumo, sem aspas, sem explicação.`,
+    });
+    const summary = typeof result === 'string' ? result.trim() : '';
+    setForm(f => ({ ...f, card_summary: summary.slice(0, 80) }));
+    setSuggestingResume(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,6 +65,7 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
       url: form.url.startsWith('http') ? form.url : `https://${form.url}`,
       category: form.category,
       description: form.description || "Ativo materializado na rede Orenstein AI.",
+      card_summary: form.card_summary || '',
       workspace_id: form.workspace_id
     }, appToEdit);
   };
@@ -77,6 +106,44 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
                 />
               </div>
             </div>
+            {/* Resumo do Cartão */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Resumo do Cartão</label>
+                <button
+                  type="button"
+                  onClick={handleSuggestResume}
+                  disabled={suggestingResume || !form.description?.replace(/<[^>]*>/g, '').trim()}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+                    suggestingResume
+                      ? (isDarkMode ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400 animate-pulse' : 'bg-indigo-50 border-indigo-200 text-indigo-400 animate-pulse')
+                      : (isDarkMode ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500 hover:text-white' : 'bg-indigo-50 border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white')
+                  } disabled:opacity-40 disabled:cursor-not-allowed`}
+                >
+                  ✨ {suggestingResume ? 'Gerando…' : 'Sugerir Resumo'}
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  maxLength={80}
+                  value={form.card_summary}
+                  onChange={(e) => setForm({ ...form, card_summary: e.target.value.slice(0, 80) })}
+                  placeholder="Ex: Evolução SOAP automática em segundos"
+                  className={`w-full border focus:border-indigo-500/50 rounded-3xl px-8 py-5 text-sm font-bold outline-none transition-all shadow-inner pr-16 ${isDarkMode ? 'bg-black/40 border-slate-800 text-white placeholder:text-slate-600' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400'}`}
+                />
+                <span className={`absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black tabular-nums ${form.card_summary.length >= 75 ? 'text-amber-500' : (isDarkMode ? 'text-slate-600' : 'text-slate-400')}`}>
+                  {form.card_summary.length}/80
+                </span>
+              </div>
+              {form.card_summary && (
+                <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl border text-xs font-medium ${isDarkMode ? 'bg-slate-800/60 border-slate-700 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest flex-shrink-0 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Preview</span>
+                  <span className="line-clamp-1">{form.card_summary}</span>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-6">
               <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Workspace</label>
               {workspaces?.length === 0 ? (
