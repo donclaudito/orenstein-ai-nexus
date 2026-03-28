@@ -21,7 +21,6 @@ import CategoryModal from '../components/orenstein/CategoryModal';
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeTab, setActiveTab] = useState("Aplicações");
-  const [activeCategory, setActiveCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeApp, setActiveApp] = useState(null);
   const [activeWsId, setActiveWsId] = useState(null);
@@ -152,16 +151,6 @@ export default function Dashboard() {
     workspaces.find(ws => ws.id === activeWsId) || workspaces[0] || { name: 'Carregando...', icon_key: 'Briefcase' }
   , [workspaces, activeWsId]);
 
-  const filteredApps = useMemo(() => {
-    return apps.filter(app => {
-      const matchesWs = app.workspace_id === activeWsId;
-      const matchesCategory = activeCategory === "Todos" || app.category === activeCategory;
-      const matchesSearch = app.title?.toLowerCase().includes(searchQuery.toLowerCase());
-      const notArchived = !app.is_archived;
-      return matchesWs && matchesCategory && matchesSearch && notArchived;
-    });
-  }, [activeCategory, searchQuery, apps, activeWsId]);
-
   const archivedApps = useMemo(() => {
     return apps.filter(app => app.workspace_id === activeWsId && app.is_archived);
   }, [apps, activeWsId]);
@@ -200,10 +189,8 @@ export default function Dashboard() {
       updateAppMutation.mutate({ id: editing.id, data: formData });
     } else {
       createAppMutation.mutate({ ...formData, workspace_id: activeWsId });
-      // Expandir o setor na sidebar
       setCollapsedSectors(prev => ({ ...prev, [formData.category]: false }));
     }
-    setActiveCategory(formData.category);
     setActiveTab("Aplicações");
   };
 
@@ -363,7 +350,17 @@ export default function Dashboard() {
             activeApp ? (
               <AppViewer app={activeApp} isDarkMode={isDarkMode} onRefresh={() => setActiveApp(prev => ({...prev}))} onArchive={() => handleArchiveApp(activeApp.id, true)} onDelete={() => handleDeleteApp(activeApp.id)} />
             ) : (
-              <AppsPanel isDarkMode={isDarkMode} activeCategory={activeCategory} setActiveCategory={setActiveCategory} filteredApps={filteredApps} archivedApps={archivedApps} onSelectApp={setActiveApp} onEditApp={handleEditApp} onDeleteApp={handleDeleteApp} onArchiveApp={handleArchiveApp} />
+              <AppsPanel
+                isDarkMode={isDarkMode}
+                activeWsId={activeWsId}
+                setActiveWsId={setActiveWsId}
+                workspaces={workspaces}
+                apps={apps}
+                onSelectApp={setActiveApp}
+                onEditApp={handleEditApp}
+                onDeleteApp={handleDeleteApp}
+                onArchiveApp={handleArchiveApp}
+              />
             )
           ) : activeTab === "Definições" ? (
             <div className="space-y-16">
