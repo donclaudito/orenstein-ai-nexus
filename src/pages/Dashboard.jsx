@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import DigitalClock from '../components/orenstein/DigitalClock';
 import ActiveTerminal from '../components/orenstein/ActiveTerminal';
-import Sidebar from '../components/orenstein/Sidebar';
+import Sidebar from '../components/orenstein/Sidebar.jsx';
 import AppCard from '../components/orenstein/AppCard';
 import AppModal from '../components/orenstein/AppModal';
 import WsModal from '../components/orenstein/WsModal';
@@ -219,15 +219,15 @@ export default function Dashboard() {
     updateWsMutation.mutate({ id, data: { is_favorite: isFavorite } });
   };
 
-  const handleReorderWorkspace = (fromIndex, toIndex, sortedList) => {
-    const list = sortedList || workspaces;
-    if (toIndex < 0 || toIndex >= list.length) return;
-    const reordered = [...list];
-    const [moved] = reordered.splice(fromIndex, 1);
-    reordered.splice(toIndex, 0, moved);
-    reordered.forEach((ws, index) => {
-      updateWsMutation.mutate({ id: ws.id, data: { order_index: index } });
+  const handleReorderWorkspace = (reorderedList) => {
+    // Persiste sem invalidar cache durante updates em massa (evita race condition)
+    reorderedList.forEach((ws, index) => {
+      base44.entities.Workspace.update(ws.id, { order_index: index });
     });
+    // Só invalida uma vez no final
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    }, 500);
   };
 
   const handleDeleteWorkspace = (e, id) => {
