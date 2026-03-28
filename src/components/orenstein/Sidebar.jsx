@@ -225,12 +225,14 @@ export default function Sidebar({
                             </div>
 
                             {/* ── Shared DragDropContext for ALL categories in this workspace ── */}
+                            {/* Workspaces ficam sempre expandidos para facilitar drag entre categorias */}
                             {isActive && (
                               <div className="pl-6 space-y-1">
                                 <DragDropContext onDragEnd={handleAppDragEnd} onDragUpdate={handleAppDragUpdate} onDragStart={(s) => setDraggingAppId(s.draggableId)}>
                                   {categories.map(category => {
                                     const catApps = localAppsByCat[category.name] || [];
-                                    const isCollapsed = collapsedSectors[category.name];
+                                    // Categorias sempre expandidas para facilitar drag entre grupos
+                                    const isCollapsed = false;
                                     const isBeingTargeted = draggingOverCat === category.name && draggingAppId;
 
                                     // Show even if empty while dragging (so user can drop into empty cats)
