@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pencil, Trash2, Box, Star, GripVertical, LayoutList, ChevronUp, ChevronDown } from 'lucide-react';
+import { Pencil, Trash2, Box, Star, GripVertical, LayoutList, ChevronUp, ChevronDown, GripHorizontal } from 'lucide-react';
 import { ICON_MAP } from './iconMap';
 import { WORKSPACE_COLORS } from './workspaceColors';
 import SubMenuOrderModal from './SubMenuOrderModal';
@@ -17,6 +17,7 @@ export default function WorkspaceSettings({
   onToggleActive,
 }) {
   const [subMenuWs, setSubMenuWs] = useState(null);
+  const [draggingIdx, setDraggingIdx] = useState(null);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -44,26 +45,43 @@ export default function WorkspaceSettings({
             {workspaces.map((ws, index) => {
               const wsColor = WORKSPACE_COLORS[ws.color || 'blue'];
               const WsIcon = ICON_MAP[ws.icon_key] || <Box className="w-5 h-5" />;
-              const isActive = ws.is_active !== false; // default true if undefined
+              const isActive = ws.is_active !== false;
+              const isDraggingThis = draggingIdx === index;
 
               return (
                 <tr
                   key={ws.id}
-                  className={`group transition-all ${!isActive ? 'opacity-50' : ''} ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                  className={`group transition-all duration-200 ${!isActive ? 'opacity-50' : ''} ${
+                    isDraggingThis
+                      ? isDarkMode
+                        ? 'bg-indigo-500/10 shadow-[0_8px_32px_-4px_rgba(99,102,241,0.4)] scale-[1.01]'
+                        : 'bg-blue-50 shadow-[0_8px_32px_-4px_rgba(59,130,246,0.25)] scale-[1.01]'
+                      : isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'
+                  }`}
+                  style={{ transform: isDraggingThis ? 'translateY(-2px)' : undefined, transition: 'all 0.2s ease' }}
                 >
                   {/* Reorder */}
                   <td className="px-6 py-8">
                     <div className="flex flex-col gap-1 items-center">
                       <button
-                        onClick={() => onReorder(index, index - 1)}
+                        onClick={() => { onReorder(index, index - 1); }}
                         disabled={index === 0}
                         className={`p-1.5 rounded-lg transition-all ${index === 0 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100')}`}
                       >
                         <ChevronUp className="w-3.5 h-3.5" />
                       </button>
-                      <GripVertical className={`w-4 h-4 ${isDarkMode ? 'text-slate-700' : 'text-slate-300'}`} />
+                      <div
+                        title="Arrastar para reordenar"
+                        onMouseDown={() => setDraggingIdx(index)}
+                        onMouseUp={() => setDraggingIdx(null)}
+                        onMouseLeave={() => setDraggingIdx(null)}
+                        style={{ cursor: isDraggingThis ? 'grabbing' : 'grab' }}
+                        className={`p-1 rounded transition-colors ${isDarkMode ? 'text-slate-600 hover:text-slate-400' : 'text-slate-300 hover:text-slate-500'}`}
+                      >
+                        <GripVertical className="w-4 h-4" />
+                      </div>
                       <button
-                        onClick={() => onReorder(index, index + 1)}
+                        onClick={() => { onReorder(index, index + 1); }}
                         disabled={index === workspaces.length - 1}
                         className={`p-1.5 rounded-lg transition-all ${index === workspaces.length - 1 ? 'opacity-20 cursor-not-allowed' : (isDarkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-white/5' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100')}`}
                       >
