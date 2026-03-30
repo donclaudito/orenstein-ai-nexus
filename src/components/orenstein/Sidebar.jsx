@@ -141,7 +141,7 @@ export default function Sidebar({
           <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-black italic shadow-lg group-hover:scale-105 transition-all duration-500 text-xl">O</div>
           <div>
             <h1 className={`text-xl font-black tracking-tighter uppercase italic leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Oren AI</h1>
-            <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em]">by Orenstein</span>
+
           </div>
         </div>
       </div>
