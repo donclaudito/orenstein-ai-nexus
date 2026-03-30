@@ -19,7 +19,7 @@ export default function DescriptionPopover({ title, content, isDarkMode, onClose
 
       {/* Janela */}
       <div
-        className={`relative z-10 w-full max-w-2xl max-h-[80vh] flex flex-col rounded-[2.5rem] shadow-2xl border overflow-hidden popover-slide-up ${
+        className={`relative z-10 w-full max-w-7xl max-h-[90vh] flex flex-col rounded-[2.5rem] shadow-2xl border overflow-hidden popover-slide-up ${
           isDarkMode
             ? 'bg-slate-900 border-slate-700/60 text-slate-200'
             : 'bg-white border-slate-200 text-slate-800'
