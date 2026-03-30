@@ -74,7 +74,7 @@ Retorne APENAS o resumo, sem aspas, sem explicação.`,
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-6">
       <div className={`absolute inset-0 backdrop-blur-md ${isDarkMode ? 'bg-[#020617]/90' : 'bg-slate-900/60'}`} onClick={onClose}></div>
       <div className={`relative w-full h-full sm:h-auto sm:max-w-2xl border-0 sm:border rounded-none sm:rounded-[4rem] shadow-3xl overflow-y-auto ring-1 ring-white/10 ${isDarkMode ? 'bg-slate-900 sm:border-slate-800 shadow-black/50' : 'bg-white sm:border-slate-200 shadow-slate-300'}`}>
-        <div className="p-6 sm:p-12 lg:p-16">
+        <div className="p-6 sm:p-12 lg:p-16 overflow-y-auto max-h-[90vh] custom-scrollbar">
           <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-black tracking-tighter uppercase italic mb-8 sm:mb-12 leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{appToEdit ? 'Editar Aplicativo' : 'Adicionar Aplicativo'}</h2>
           <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
