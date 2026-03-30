@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave, workspaces, activeWsId }) {
   const [form, setForm] = useState({ name: '', url: '', category: '', description: '', card_summary: '', workspace_id: '' });
   const [suggestingResume, setSuggestingResume] = useState(false);
+  const [formattingDesc, setFormattingDesc] = useState(false);
   
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -57,6 +58,34 @@ Retorne APENAS o resumo, sem aspas, sem explicação.`,
     setSuggestingResume(false);
   };
 
+  const handleFormatDescription = async () => {
+    const rawText = form.description?.replace(/<[^>]*>/g, '').trim();
+    if (!rawText) return;
+    setFormattingDesc(true);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `Você é um especialista em UX Writing e design de interfaces de alta performance para sistemas médicos.
+
+Converta o texto abaixo em HTML estruturado, aplicando hierarquia visual clara e espaçamento legível.
+
+Regras obrigatórias:
+- Use <h2 class="text-lg font-black uppercase tracking-wide mb-3 mt-6 first:mt-0"> para seções principais
+- Use <h3 class="text-sm font-black uppercase tracking-widest mb-2 mt-4 opacity-70"> para subseções
+- Use <p class="text-sm leading-relaxed mb-4"> para parágrafos
+- Use <ul class="space-y-2 mb-4 ml-2"> com <li class="flex items-start gap-2 text-sm leading-relaxed"><span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-current flex-shrink-0 opacity-60"></span><span> para listas com bullet
+- Use <strong class="font-black"> para destacar termos-chave
+- O elemento mais importante deve vir PRIMEIRO (pirâmide invertida)
+- Omita qualquer texto introdutório ou explicação — retorne APENAS o HTML
+
+Texto:
+"${rawText}"
+
+Retorne APENAS o HTML estruturado, sem markdown, sem blocos de código, sem explicação.`,
+    });
+    const html = typeof result === 'string' ? result.trim() : '';
+    if (html) setForm(f => ({ ...f, description: html }));
+    setFormattingDesc(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.name.trim() || !form.url.trim()) return;
@@ -88,7 +117,21 @@ Retorne APENAS o resumo, sem aspas, sem explicação.`,
               </div>
             </div>
             <div className="space-y-4">
-              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Descrição Detalhada</label>
+              <div className="flex items-center justify-between px-1">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Descrição Detalhada</label>
+                <button
+                  type="button"
+                  onClick={handleFormatDescription}
+                  disabled={formattingDesc || !form.description?.replace(/<[^>]*>/g, '').trim()}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+                    formattingDesc
+                      ? (isDarkMode ? 'bg-violet-500/10 border-violet-500/20 text-violet-400 animate-pulse' : 'bg-violet-50 border-violet-200 text-violet-400 animate-pulse')
+                      : (isDarkMode ? 'bg-violet-500/10 border-violet-500/20 text-violet-400 hover:bg-violet-500 hover:text-white' : 'bg-violet-50 border-violet-100 text-violet-600 hover:bg-violet-600 hover:text-white')
+                  } disabled:opacity-40 disabled:cursor-not-allowed`}
+                >
+                  🧠 {formattingDesc ? 'Formatando…' : 'Formatar com IA'}
+                </button>
+              </div>
               <div className={`rounded-3xl overflow-hidden border ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}>
                 <ReactQuill
                   theme="snow"
