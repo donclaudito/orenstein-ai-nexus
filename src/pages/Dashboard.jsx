@@ -324,7 +324,6 @@ export default function Dashboard() {
             ) : (
               <div className="flex items-center gap-2 sm:gap-3 pt-2">
                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <h2 className={`text-sm sm:text-xl font-black italic uppercase tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Orenstein AI</h2>
               </div>
             )}
           </div>
