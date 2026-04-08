@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { ICON_MAP } from './iconMap';
 import { WORKSPACE_COLORS } from './workspaceColors';
 import AppCard from './AppCard';
+import AppsPanelToolbar from './AppsPanelToolbar';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { useFavorites } from '../../hooks/useFavorites';
 
 export default function AppsPanel({
   isDarkMode,
@@ -17,6 +19,10 @@ export default function AppsPanel({
   onDeleteApp,
   onArchiveApp,
 }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: () => base44.entities.Category.list('order_index'),
@@ -30,7 +36,27 @@ export default function AppsPanel({
   });
 
   const activeWorkspace = sortedWorkspaces.find(w => w.id === activeWsId) || sortedWorkspaces[0];
-  const activeApps = apps.filter(a => a.workspace_id === activeWorkspace?.id && !a.is_archived);
+  const rawActiveApps = apps.filter(a => a.workspace_id === activeWorkspace?.id && !a.is_archived);
+
+  // Apply search + favorites filter
+  const activeApps = useMemo(() => {
+    let filtered = rawActiveApps;
+    if (activeFilter === 'favorites') {
+      filtered = filtered.filter(a => isFavorite(a.id));
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(a =>
+        a.title?.toLowerCase().includes(q) ||
+        a.card_summary?.toLowerCase().includes(q) ||
+        a.description?.replace(/<[^>]*>/g, '').toLowerCase().includes(q) ||
+        a.category?.toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }, [rawActiveApps, activeFilter, searchQuery, favorites]);
+
+  const favoritesCount = rawActiveApps.filter(a => isFavorite(a.id)).length;
 
   const categorySections = categories
     .map(cat => ({
@@ -97,6 +123,19 @@ export default function AppsPanel({
         </div>
       )}
 
+      {/* Toolbar: search, favorites filter, export */}
+      <AppsPanelToolbar
+        isDarkMode={isDarkMode}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        favoritesCount={favoritesCount}
+        filteredCount={activeApps.length}
+        totalCount={rawActiveApps.length}
+        apps={activeApps}
+      />
+
       {/* Category sections */}
       {categorySections.length === 0 ? (
         <div className={`flex flex-col items-center justify-center py-32 ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -135,6 +174,8 @@ export default function AppsPanel({
                       onEdit={onEditApp}
                       onDelete={onDeleteApp}
                       onArchive={onArchiveApp}
+                      isFavorite={isFavorite(app.id)}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ))}
                 </div>
