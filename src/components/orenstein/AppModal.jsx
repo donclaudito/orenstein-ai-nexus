@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { ExternalLink } from 'lucide-react';
 
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave, workspaces, activeWsId }) {
   const [form, setForm] = useState({ name: '', url: '', category: '', description: '', card_summary: '', workspace_id: '' });
@@ -216,6 +217,16 @@ Retorne APENAS o HTML estruturado, sem markdown, sem blocos de código, sem expl
               <button type="button" onClick={onClose} className={`flex-1 px-6 sm:px-8 py-4 sm:py-6 rounded-[2rem] text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all italic ${isDarkMode ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Abortar</button>
               <button type="submit" className={`flex-[2] px-8 sm:px-12 py-4 sm:py-6 rounded-[2rem] text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-white text-slate-950 shadow-white/10' : 'bg-slate-900 text-white shadow-black/10'}`}>Sincronizar</button>
             </div>
+            {form.url && (
+              <a
+                href={form.url.startsWith('http') ? form.url : `https://${form.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-center gap-2 w-full py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all border hover:scale-105 active:scale-95 ${isDarkMode ? 'border-blue-500/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white' : 'border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'}`}
+              >
+                <ExternalLink className="w-4 h-4" /> Acessar Aplicativo
+              </a>
+            )}
           </form>
         </div>
       </div>
