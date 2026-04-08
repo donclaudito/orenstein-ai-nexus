@@ -58,6 +58,7 @@ export default function AppsPanelToolbar({
   filteredCount,
   totalCount,
   apps,
+  hideSearchAndFilter,
 }) {
   const [exportLoading, setExportLoading] = useState(null);
 
@@ -76,47 +77,51 @@ export default function AppsPanelToolbar({
   const btnBase = `flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border disabled:opacity-40 disabled:cursor-not-allowed`;
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10 sm:mb-12 items-start sm:items-center">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 items-start sm:items-center">
 
-      {/* Filtro de abas */}
-      <div className={`flex p-1 rounded-2xl gap-1 border flex-shrink-0 ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <button
-          onClick={() => setActiveFilter('all')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeFilter === 'all' ? (isDarkMode ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-900 text-white shadow-sm') : (isDarkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-700')}`}
-        >
-          <LayoutGrid className="w-3.5 h-3.5" /> Todos
-          <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${activeFilter === 'all' ? 'bg-white/20' : (isDarkMode ? 'bg-slate-800' : 'bg-slate-100')}`}>{totalCount}</span>
-        </button>
-        <button
-          onClick={() => setActiveFilter('favorites')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeFilter === 'favorites' ? 'bg-amber-500 text-white shadow-lg' : (isDarkMode ? 'text-slate-500 hover:text-amber-400' : 'text-slate-400 hover:text-amber-500')}`}
-        >
-          <Star className={`w-3.5 h-3.5 ${activeFilter === 'favorites' ? 'fill-current' : ''}`} /> Favoritos
-          {favoritesCount > 0 && (
-            <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${activeFilter === 'favorites' ? 'bg-white/20' : 'bg-amber-500/20 text-amber-500'}`}>{favoritesCount}</span>
-          )}
-        </button>
-      </div>
+      {!hideSearchAndFilter && (
+        <>
+          {/* Filtro de abas */}
+          <div className={`flex p-1 rounded-2xl gap-1 border flex-shrink-0 ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeFilter === 'all' ? (isDarkMode ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-900 text-white shadow-sm') : (isDarkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-700')}`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" /> Todos
+              <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${activeFilter === 'all' ? 'bg-white/20' : (isDarkMode ? 'bg-slate-800' : 'bg-slate-100')}`}>{totalCount}</span>
+            </button>
+            <button
+              onClick={() => setActiveFilter('favorites')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeFilter === 'favorites' ? 'bg-amber-500 text-white shadow-lg' : (isDarkMode ? 'text-slate-500 hover:text-amber-400' : 'text-slate-400 hover:text-amber-500')}`}
+            >
+              <Star className={`w-3.5 h-3.5 ${activeFilter === 'favorites' ? 'fill-current' : ''}`} /> Favoritos
+              {favoritesCount > 0 && (
+                <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${activeFilter === 'favorites' ? 'bg-white/20' : 'bg-amber-500/20 text-amber-500'}`}>{favoritesCount}</span>
+              )}
+            </button>
+          </div>
 
-      {/* Search */}
-      <div className="relative flex-1 min-w-0 w-full sm:w-auto">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          placeholder="Buscar aplicações..."
-          className={inputStyle}
-        />
-        {searchQuery && (
-          <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        )}
-      </div>
+          {/* Search */}
+          <div className="relative flex-1 min-w-0 w-full sm:w-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Buscar aplicações..."
+              className={inputStyle}
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       {/* Export */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className={`flex items-center gap-2 flex-shrink-0 ${hideSearchAndFilter ? 'ml-auto' : ''}`}>
         <button
           onClick={() => handleExport('csv')}
           disabled={!!exportLoading || apps.length === 0}

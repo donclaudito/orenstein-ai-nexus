@@ -4,9 +4,10 @@ import 'react-quill/dist/quill.snow.css';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink } from 'lucide-react';
+import TagManager from './TagManager';
 
 export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSave, workspaces, activeWsId }) {
-  const [form, setForm] = useState({ name: '', url: '', category: '', description: '', card_summary: '', workspace_id: '' });
+  const [form, setForm] = useState({ name: '', url: '', category: '', description: '', card_summary: '', workspace_id: '', tags: [] });
   const [suggestingResume, setSuggestingResume] = useState(false);
   const [formattingDesc, setFormattingDesc] = useState(false);
   
@@ -24,10 +25,11 @@ export default function AppModal({ isDarkMode, isOpen, appToEdit, onClose, onSav
         category: appToEdit.category,
         description: appToEdit.description || '',
         card_summary: appToEdit.card_summary || '',
-        workspace_id: appToEdit.workspace_id || activeWsId || ''
+        workspace_id: appToEdit.workspace_id || activeWsId || '',
+        tags: appToEdit.tags || [],
       });
     } else {
-      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '', card_summary: '', workspace_id: activeWsId || '' });
+      setForm({ name: '', url: '', category: categories[0]?.name || '', description: '', card_summary: '', workspace_id: activeWsId || '', tags: [] });
     }
   }, [appToEdit, isOpen, categories, activeWsId]);
 
@@ -96,7 +98,8 @@ Retorne APENAS o HTML estruturado, sem markdown, sem blocos de código, sem expl
       category: form.category,
       description: form.description || "Ativo materializado na rede Orenstein AI.",
       card_summary: form.card_summary || '',
-      workspace_id: form.workspace_id
+      workspace_id: form.workspace_id,
+      tags: form.tags || [],
     }, appToEdit);
   };
 
@@ -186,6 +189,17 @@ Retorne APENAS o HTML estruturado, sem markdown, sem blocos de código, sem expl
                   <span className="line-clamp-1">{form.card_summary}</span>
                 </div>
               )}
+            </div>
+
+            {/* Tags */}
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">Tags</label>
+              <TagManager
+                isDarkMode={isDarkMode}
+                tags={form.tags}
+                onChange={(tags) => setForm(f => ({ ...f, tags }))}
+                suggestedTags={[]}
+              />
             </div>
 
             <div className="space-y-6">
