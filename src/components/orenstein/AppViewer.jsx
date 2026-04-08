@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Zap, RotateCw } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function AppViewer({ app, isDarkMode, onRefresh }) {
+  useEffect(() => {
+    if (app?.id) {
+      base44.entities.AppAccessLog.create({
+        app_id: app.id,
+        app_title: app.title,
+        app_category: app.category || '',
+        workspace_id: app.workspace_id || '',
+      }).catch(() => {});
+    }
+  }, [app?.id]);
   return (
     <div className={`w-full h-full flex flex-col rounded-[3rem] overflow-hidden border shadow-3xl ${isDarkMode ? 'border-slate-800 bg-black shadow-black/50' : 'border-slate-200 bg-white shadow-slate-200'}`}>
       <div className={`h-14 backdrop-blur-xl border-b flex items-center justify-between px-8 shrink-0 ${isDarkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
