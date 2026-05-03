@@ -7,21 +7,21 @@ const testimonials = [
     role: 'Clínica Geral · São Paulo',
     avatar: 'FL',
     color: 'bg-blue-100 text-blue-700',
-    text: 'Reduzi em 40% o tempo que perdia procurando aplicativos. Agora tudo está num painel só, organizado pela minha equipe.',
+    text: 'O AI Scribe mudou minha rotina. Saio do consultório sem pendências no prontuário — a IA já gerou o sumário enquanto eu ainda conversava com o paciente.',
   },
   {
     name: 'Dr. Marcos Andrade',
-    role: 'Cirurgião · Rio de Janeiro',
+    role: 'Intensivista UTI · Rio de Janeiro',
     avatar: 'MA',
     color: 'bg-indigo-100 text-indigo-700',
-    text: 'A segurança me deu tranquilidade. Sei que os dados dos meus pacientes estão protegidos sem precisar me preocupar com infraestrutura.',
+    text: 'No plantão noturno, o copiloto clínico me responde baseado nos protocolos em segundos. É como ter um colega sênior sempre disponível, sem interromper meu fluxo.',
   },
   {
-    name: 'Equipe HCM',
-    role: 'Hospital Central de Medicina',
-    avatar: 'HC',
+    name: 'Equipe Sabará Hospital Infantil',
+    role: 'Hospital Infantil · São Paulo',
+    avatar: 'SH',
     color: 'bg-emerald-100 text-emerald-700',
-    text: 'Implantamos para 80 médicos em uma semana. O suporte foi excepcional — alguém que realmente entende o ambiente hospitalar.',
+    text: '60% dos nossos médicos relataram menor sobrecarga cognitiva e 78% melhoraram o vínculo com as famílias. A documentação automatizada transformou a experiência de cuidado.',
   },
 ];
 

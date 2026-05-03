@@ -7,6 +7,7 @@ import BenefitHighlight from '../components/landing/BenefitHighlight';
 import Testimonials from '../components/landing/Testimonials';
 import FAQSection from '../components/landing/FAQSection';
 import LandingFooter from '../components/landing/LandingFooter';
+import UseCasesSection from '../components/landing/UseCasesSection';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -38,7 +39,7 @@ export default function LandingPage() {
 
           {/* Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
-            {['Funcionalidades', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
+            {['Funcionalidades', 'Casos', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -72,7 +73,7 @@ export default function LandingPage() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-b border-slate-100 px-6 py-4 space-y-3">
-            {['Funcionalidades', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
+            {['Funcionalidades', 'Casos', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -96,6 +97,7 @@ export default function LandingPage() {
       <HeroSection />
       <SocialProof />
       <FeaturesGrid />
+      <UseCasesSection />
       <BenefitHighlight />
       <Testimonials />
       <FAQSection />

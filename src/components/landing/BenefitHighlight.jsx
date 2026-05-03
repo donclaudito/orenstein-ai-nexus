@@ -2,11 +2,12 @@ import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
 const benefits = [
-  'Onboarding em menos de 5 minutos, sem treinamento técnico',
-  'Suporte especializado em saúde digital 24/7',
-  'Atualizações contínuas sem interrupção do serviço',
-  'Integrações com os principais sistemas de saúde do Brasil',
-  'Controle total de permissões por perfil de usuário',
+  'AI Scribe ouve e documenta consultas automaticamente em tempo real',
+  'Copilotos clínicos integrados para suporte em UTIs e pronto-socorros',
+  'IA Agêntica que gerencia fluxos de pacientes e valida faturamento sozinha',
+  'Monitoramento ativo do bem-estar médico — detecta sinais de burnout',
+  'Integrações com prontuários eletrônicos líderes do mercado brasileiro',
+  'Controle granular de permissões por perfil com auditoria total',
 ];
 
 export default function BenefitHighlight() {
@@ -19,11 +20,11 @@ export default function BenefitHighlight() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600 mb-3">Por que Orenstein AI?</p>
             <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight mb-6">
-              Construído por<br />médicos, para<br />médicos
+              IA que trabalha<br />para o médico,<br />não o contrário
             </h2>
             <p className="text-slate-500 text-base leading-relaxed mb-10 max-w-lg">
-              Nossa plataforma foi desenhada em parceria com profissionais de saúde reais.
-              Cada decisão de design prioriza a redução de fricção clínica e a segurança do paciente.
+              De AI Scribes que eliminam a digitação até copilotos clínicos que apoiam decisões em plantões de UTI —
+              cada ferramenta foi pensada para devolver tempo clínico e reduzir a fadiga do profissional de saúde.
             </p>
             <ul className="space-y-4">
               {benefits.map((item, i) => (
@@ -43,22 +44,32 @@ export default function BenefitHighlight() {
             </div>
           </div>
 
-          {/* Visual side */}
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { value: '500+', label: 'Profissionais ativos', bg: 'bg-blue-600', text: 'text-white' },
-              { value: '99.9%', label: 'Uptime garantido', bg: 'bg-slate-900', text: 'text-white' },
-              { value: '< 5min', label: 'Tempo de onboarding', bg: 'bg-white', text: 'text-slate-900', border: true },
-              { value: '0', label: 'Incidentes de segurança', bg: 'bg-emerald-500', text: 'text-white' },
-            ].map((s, i) => (
-              <div
-                key={i}
-                className={`${s.bg} ${s.text} ${s.border ? 'border border-slate-200' : ''} rounded-2xl p-8 flex flex-col gap-2 shadow-sm`}
-              >
-                <span className="text-4xl font-black tracking-tight">{s.value}</span>
-                <span className="text-sm font-medium opacity-80">{s.label}</span>
+          {/* Visual side — case study cards */}
+          <div className="space-y-4">
+            <div className="bg-blue-600 text-white rounded-2xl p-7 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-widest opacity-70 mb-3">Caso Real · Sabará Hospital Infantil</p>
+              <div className="flex gap-6 mb-4">
+                <div>
+                  <p className="text-4xl font-black">60%</p>
+                  <p className="text-sm opacity-80 mt-1">menos fadiga mental</p>
+                </div>
+                <div>
+                  <p className="text-4xl font-black">78%</p>
+                  <p className="text-sm opacity-80 mt-1">melhor vínculo com famílias</p>
+                </div>
               </div>
-            ))}
+              <p className="text-sm opacity-70 leading-relaxed">AI Scribe implantado com resultado imediato na qualidade de vida dos médicos e na relação com pacientes.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-900 text-white rounded-2xl p-6 flex flex-col gap-1 shadow-sm">
+                <span className="text-3xl font-black">40%+</span>
+                <span className="text-sm opacity-70">menos burocracia</span>
+              </div>
+              <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl p-6 flex flex-col gap-1 shadow-sm">
+                <span className="text-3xl font-black text-emerald-600">Milhares</span>
+                <span className="text-sm text-slate-500">de horas clínicas economizadas</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
