@@ -17,6 +17,7 @@ import AppsPanel from '../components/orenstein/AppsPanel';
 import KernelNotes from '../components/orenstein/KernelNotes';
 import CategorySettings from '../components/orenstein/CategorySettings';
 import CategoryModal from '../components/orenstein/CategoryModal';
+import AppFeaturesModule from '../components/orenstein/AppFeaturesModule';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -372,6 +373,8 @@ export default function Dashboard() {
                 <CategorySettings isDarkMode={isDarkMode} categories={categories} onEdit={triggerEditCategory} onDelete={handleDeleteCategory} onCreateNew={() => { setCategoryToEdit(null); setIsCategoryModalOpen(true); }} onReorder={handleReorderCategory} />
               </div>
             </div>
+          ) : activeTab === "Funcionalidades" ? (
+            <AppFeaturesModule isDarkMode={isDarkMode} workspaces={workspaces} apps={apps} />
           ) : activeTab === "Terminal" ? (
             <div className="max-w-4xl mx-auto"><ActiveTerminal workspaceName={currentWorkspace.name} isDarkMode={isDarkMode} /></div>
           ) : activeTab === "Notas" ? (
