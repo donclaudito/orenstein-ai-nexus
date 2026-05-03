@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { LogIn } from 'lucide-react';
 import HeroSection from '../components/landing/HeroSection';
 import SocialProof from '../components/landing/SocialProof';
 import FeaturesGrid from '../components/landing/FeaturesGrid';
@@ -54,6 +55,7 @@ export default function LandingPage() {
               href="/"
               className="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:scale-105 active:scale-95"
             >
+              <LogIn className="w-4 h-4" />
               Acessar Plataforma
             </a>
             <button
