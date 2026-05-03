@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain, Shield, Zap, LayoutGrid, Users, Lock } from 'lucide-react';
+import { Brain, Shield, Zap, LayoutGrid, Users, Lock, Mic } from 'lucide-react';
 
 const features = [
   {
@@ -21,16 +21,22 @@ const features = [
     color: 'emerald',
   },
   {
+    icon: <Mic className="w-6 h-6" />,
+    title: 'AI Scribe — Documentação por Voz',
+    desc: 'A IA ouve a consulta, identifica os papéis na conversa e gera sumários estruturados automaticamente no prontuário. 60% dos médicos relatam menor fadiga mental e 78% melhor vínculo com pacientes.',
+    color: 'violet',
+  },
+  {
     icon: <Brain className="w-6 h-6" />,
     title: 'IA Clínica',
     desc: 'Resumos automáticos, sugestões de protocolos e assistência em evoluções médicas geradas por inteligência artificial.',
-    color: 'violet',
+    color: 'pink',
   },
   {
     icon: <Users className="w-6 h-6" />,
     title: 'Gestão de Equipes',
     desc: 'Controle granular de acesso por perfil. Médicos, enfermeiros e administradores com permissões distintas e auditáveis.',
-    color: 'pink',
+    color: 'indigo',
   },
   {
     icon: <Lock className="w-6 h-6" />,

@@ -31,8 +31,7 @@ export default function HeroSection() {
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
-          O hub inteligente que centraliza todos os aplicativos clínicos da sua equipe.
-          Menos tempo navegando, mais tempo cuidando de pacientes.
+          O hub inteligente que centraliza todos os aplicativos clínicos da sua equipe — com IA que escuta consultas, gera sumários automáticos e reduz mais de <strong className="text-slate-700 font-semibold">40% do tempo burocrático</strong>, para que você foque no que importa: o paciente.
         </p>
 
         {/* CTAs */}
