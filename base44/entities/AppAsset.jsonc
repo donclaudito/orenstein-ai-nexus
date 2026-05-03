@@ -35,14 +35,6 @@
       "type": "number",
       "default": 0,
       "description": "\u00cdndice de ordena\u00e7\u00e3o dentro da categoria"
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [],
-      "description": "Tags personalizadas para filtragem"
     }
   },
   "required": [
