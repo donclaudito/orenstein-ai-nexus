@@ -18,6 +18,7 @@ import KernelNotes from '../components/orenstein/KernelNotes';
 import CategorySettings from '../components/orenstein/CategorySettings';
 import CategoryModal from '../components/orenstein/CategoryModal';
 import StatsPanel from '../components/orenstein/StatsPanel';
+import AppReferencePanel from '../components/orenstein/AppReferencePanel';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -384,6 +385,12 @@ export default function Dashboard() {
               isDarkMode={isDarkMode}
               apps={apps}
               accessLogs={accessLogs}
+              workspaces={workspaces}
+            />
+          ) : activeTab === "Consulta" ? (
+            <AppReferencePanel
+              isDarkMode={isDarkMode}
+              apps={apps}
               workspaces={workspaces}
             />
           ) : activeTab === "Terminal" ? (

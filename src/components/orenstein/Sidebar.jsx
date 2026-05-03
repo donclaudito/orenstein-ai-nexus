@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Layers, LayoutGrid, PackagePlus, FileText,
-  Terminal as TerminalIcon, User, LogOut, BarChart2,
+  Terminal as TerminalIcon, User, LogOut, BarChart2, BookOpen,
 } from 'lucide-react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import { ICON_MAP } from './iconMap';
@@ -234,6 +234,9 @@ export default function Sidebar({
           <div className="space-y-1.5">
             <button onClick={() => { setActiveTab("Estatísticas"); setActiveApp(null); }} className={`w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-xs font-bold transition-all border ${activeTab === 'Estatísticas' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500 shadow-sm' : 'text-slate-500 border-transparent hover:bg-black/5'}`}>
               <BarChart2 className="w-4 h-4" /> Estatísticas
+            </button>
+            <button onClick={() => { setActiveTab("Consulta"); setActiveApp(null); }} className={`w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-xs font-bold transition-all border ${activeTab === 'Consulta' ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-500 shadow-sm' : 'text-slate-500 border-transparent hover:bg-black/5'}`}>
+              <BookOpen className="w-4 h-4" /> Consulta de Funções
             </button>
             <button onClick={() => { setActiveTab("Notas"); setActiveApp(null); }} className={`w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-xs font-bold transition-all border ${activeTab === 'Notas' ? 'bg-amber-500/10 border-amber-500/20 text-amber-600 shadow-sm' : 'text-slate-500 border-transparent hover:bg-black/5'}`}>
               <FileText className="w-4 h-4" /> Notas de Kernel
