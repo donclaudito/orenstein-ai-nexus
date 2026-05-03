@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { LogIn } from 'lucide-react';
 import HeroSection from '../components/landing/HeroSection';
 import SocialProof from '../components/landing/SocialProof';
 import FeaturesGrid from '../components/landing/FeaturesGrid';
@@ -7,7 +6,6 @@ import BenefitHighlight from '../components/landing/BenefitHighlight';
 import Testimonials from '../components/landing/Testimonials';
 import FAQSection from '../components/landing/FAQSection';
 import LandingFooter from '../components/landing/LandingFooter';
-import UseCasesSection from '../components/landing/UseCasesSection';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -39,7 +37,7 @@ export default function LandingPage() {
 
           {/* Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
-            {['Funcionalidades', 'Casos', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
+            {['Funcionalidades', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -56,7 +54,6 @@ export default function LandingPage() {
               href="/"
               className="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:scale-105 active:scale-95"
             >
-              <LogIn className="w-4 h-4" />
               Acessar Plataforma
             </a>
             <button
@@ -73,7 +70,7 @@ export default function LandingPage() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-b border-slate-100 px-6 py-4 space-y-3">
-            {['Funcionalidades', 'Casos', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
+            {['Funcionalidades', 'Diferenciais', 'Depoimentos', 'FAQ'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -97,7 +94,6 @@ export default function LandingPage() {
       <HeroSection />
       <SocialProof />
       <FeaturesGrid />
-      <UseCasesSection />
       <BenefitHighlight />
       <Testimonials />
       <FAQSection />

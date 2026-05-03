@@ -17,7 +17,7 @@ import AppsPanel from '../components/orenstein/AppsPanel';
 import KernelNotes from '../components/orenstein/KernelNotes';
 import CategorySettings from '../components/orenstein/CategorySettings';
 import CategoryModal from '../components/orenstein/CategoryModal';
-import AppFeaturesModule from '../components/orenstein/AppFeaturesModule';
+import StatsPanel from '../components/orenstein/StatsPanel';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -47,6 +47,12 @@ export default function Dashboard() {
   const { data: apps = [], isLoading: appsLoading } = useQuery({
     queryKey: ['apps'],
     queryFn: () => base44.entities.AppAsset.list('-created_date'),
+    initialData: [],
+  });
+
+  const { data: accessLogs = [] } = useQuery({
+    queryKey: ['access_logs'],
+    queryFn: () => base44.entities.AppAccessLog.list('-created_date', 500),
     initialData: [],
   });
 
@@ -373,8 +379,13 @@ export default function Dashboard() {
                 <CategorySettings isDarkMode={isDarkMode} categories={categories} onEdit={triggerEditCategory} onDelete={handleDeleteCategory} onCreateNew={() => { setCategoryToEdit(null); setIsCategoryModalOpen(true); }} onReorder={handleReorderCategory} />
               </div>
             </div>
-          ) : activeTab === "Funcionalidades" ? (
-            <AppFeaturesModule isDarkMode={isDarkMode} workspaces={workspaces} apps={apps} />
+          ) : activeTab === "Estatísticas" ? (
+            <StatsPanel
+              isDarkMode={isDarkMode}
+              apps={apps}
+              accessLogs={accessLogs}
+              workspaces={workspaces}
+            />
           ) : activeTab === "Terminal" ? (
             <div className="max-w-4xl mx-auto"><ActiveTerminal workspaceName={currentWorkspace.name} isDarkMode={isDarkMode} /></div>
           ) : activeTab === "Notas" ? (

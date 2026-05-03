@@ -1,9 +1,9 @@
 import React, { memo, useState } from 'react';
-import { Pencil, Trash2, ChevronRight, Archive } from 'lucide-react';
+import { Pencil, Trash2, ChevronRight, Archive, Star } from 'lucide-react';
 import { getSectorStyles } from './sectorStyles';
 import DescriptionPopover from './DescriptionPopover';
 
-const AppCard = memo(({ app, isDarkMode, onSelect, onEdit, onDelete, onArchive }) => {
+const AppCard = memo(({ app, isDarkMode, onSelect, onEdit, onDelete, onArchive, isFavorite, onToggleFavorite }) => {
   const style = getSectorStyles(app.category, isDarkMode);
   const [showPopover, setShowPopover] = useState(false);
 
@@ -16,6 +16,17 @@ const AppCard = memo(({ app, isDarkMode, onSelect, onEdit, onDelete, onArchive }
         onClick={() => onSelect(app)}
         className={`group relative ${isDarkMode ? 'bg-white/5 border-slate-200/10 shadow-2xl' : 'bg-white border-slate-200 shadow-xl'} backdrop-blur-md rounded-[2.5rem] p-8 border hover:border-blue-500/50 transition-all duration-500 cursor-pointer hover:-translate-y-2 overflow-hidden text-left`}
       >
+        {/* Favorite button — always visible when active */}
+        {onToggleFavorite && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleFavorite(app.id); }}
+            className={`absolute top-5 left-5 p-2 rounded-xl transition-all ${isFavorite ? 'opacity-100 bg-amber-500/20' : 'opacity-0 group-hover:opacity-100 bg-transparent hover:bg-amber-500/10'}`}
+            title={isFavorite ? 'Remover dos favoritos' : 'Favoritar'}
+          >
+            <Star className={`w-4 h-4 transition-colors ${isFavorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400 hover:text-amber-400'}`} />
+          </button>
+        )}
+
         {/* Hover action buttons */}
         <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
           <button onClick={(e) => { e.stopPropagation(); onEdit(app); }} className="p-2.5 bg-blue-500/20 hover:bg-blue-500 text-blue-500 hover:text-white rounded-xl transition-all"><Pencil className="w-4 h-4" /></button>
