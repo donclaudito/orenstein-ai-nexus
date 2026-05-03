@@ -18,7 +18,6 @@ import KernelNotes from '../components/orenstein/KernelNotes';
 import CategorySettings from '../components/orenstein/CategorySettings';
 import CategoryModal from '../components/orenstein/CategoryModal';
 import StatsPanel from '../components/orenstein/StatsPanel';
-import AnalyticsPanel from '../components/orenstein/AnalyticsPanel';
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -387,8 +386,6 @@ export default function Dashboard() {
               accessLogs={accessLogs}
               workspaces={workspaces}
             />
-          ) : activeTab === "Analytics" ? (
-            <AnalyticsPanel isDarkMode={isDarkMode} workspaces={workspaces} />
           ) : activeTab === "Terminal" ? (
             <div className="max-w-4xl mx-auto"><ActiveTerminal workspaceName={currentWorkspace.name} isDarkMode={isDarkMode} /></div>
           ) : activeTab === "Notas" ? (
