@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Layers, LayoutGrid, PackagePlus, FileText,
-  Terminal as TerminalIcon, User, LogOut, BarChart2,
+  Terminal as TerminalIcon, User, LogOut, BarChart2, Brain,
 } from 'lucide-react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import { ICON_MAP } from './iconMap';
@@ -240,6 +240,9 @@ export default function Sidebar({
             </button>
             <button onClick={() => { setActiveTab("Terminal"); setActiveApp(null); }} className={`w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-xs font-bold transition-all border ${activeTab === 'Terminal' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 shadow-sm' : 'text-slate-500 border-transparent hover:bg-black/5'}`}>
               <TerminalIcon className="w-4 h-4" /> Terminal Ativo
+            </button>
+            <button onClick={() => { setActiveTab("Inteligência"); setActiveApp(null); }} className={`w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-xs font-bold transition-all border ${activeTab === 'Inteligência' ? 'bg-violet-500/10 border-violet-500/20 text-violet-500 shadow-sm' : 'text-slate-500 border-transparent hover:bg-black/5'}`}>
+              <Brain className="w-4 h-4" /> Inteligência de Apps
             </button>
           </div>
         </section>
