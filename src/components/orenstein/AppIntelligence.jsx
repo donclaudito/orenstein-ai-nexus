@@ -354,15 +354,61 @@ Retorne SOMENTE o JSON, sem markdown, sem explicação.`,
                     </div>
                   )}
 
-                  {/* Link direto */}
-                  <a
-                    href={app.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`mt-4 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}
-                  >
-                    <ExternalLink className="w-3 h-3" /> Acessar Aplicativo
-                  </a>
+                  {/* Rodapé: link + export individual */}
+                  <div className="mt-4 flex items-center gap-4 flex-wrap">
+                    <a
+                      href={app.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}
+                    >
+                      <ExternalLink className="w-3 h-3" /> Acessar Aplicativo
+                    </a>
+
+                    {/* Exporta JSON apenas deste app */}
+                    <button
+                      onClick={() => {
+                        const payload = {
+                          export_meta: {
+                            generated_at: new Date().toISOString(),
+                            source: 'Oren AI — Inteligência de Apps',
+                            app_id: app.id,
+                          },
+                          app: {
+                            id: app.id,
+                            title: app.title,
+                            url: app.url,
+                            category: app.category,
+                            workspace: wsMap[app.workspace_id] || 'N/A',
+                            tags: app.tags || [],
+                            card_summary: app.card_summary || '',
+                            description_raw: app.description?.replace(/<[^>]*>/g, '').trim() || '',
+                            analysis: {
+                              features: analysis.features || [],
+                              benefits: analysis.benefits || [],
+                              use_cases: analysis.use_cases || [],
+                              technical_summary: analysis.technical_summary || '',
+                              ai_context: analysis.ai_context || '',
+                            },
+                          },
+                        };
+                        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${app.title.toLowerCase().replace(/\s+/g, '-')}-isa.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                        isDarkMode
+                          ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white hover:border-emerald-500'
+                          : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600'
+                      }`}
+                    >
+                      <Download className="w-3.5 h-3.5" /> Exportar JSON
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
